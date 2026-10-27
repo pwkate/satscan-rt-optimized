@@ -1,3 +1,41 @@
+# Modifications in this research fork
+
+> This section documents the intended optimization design relative to the original SaTScan architecture. The original developer guide is preserved below.
+
+## Computational flow
+
+1. **Input and setup:** Existing analysis-run and data-handling classes load parameters, observed data, and expected counts.
+2. **Neighbor construction:** Circular and elliptic neighbor sequences are built in parallel where supported; elliptic sequences use more contiguous storage to reduce allocation overhead.
+3. **Observed scan:** Candidate windows are evaluated in parallel using worker-local state. For eligible high-rate, single-dataset Poisson space-time configurations, a case gate avoids likelihood evaluation for expansions that add no cases while preserving neighbor traversal and expected-count updates.
+4. **Monte Carlo:** Temporal bounds are reused where possible. For tested circular and elliptic space-time paths, simulated datasets are processed in batches of up to eight with shared invariant traversal/expected-count work and simulation-specific case counts and likelihood evaluation.
+5. **Results:** Existing output and cluster-reporting infrastructure is retained, subject to verification of tie handling and reporting behavior.
+
+## Relationship to upstream components
+
+| Upstream component | Role | Modification area |
+| --- | --- | --- |
+| `CSaTScanData` / neighbor arrays | Neighbor construction and storage | Parallel neighbor generation; contiguous elliptic storage |
+| `CAnalysis` and spatial/space-time implementations | Observed scan and Monte Carlo orchestration | Parallel work; loop optimization; batching |
+| `CTimeIntervals` and temporal evaluators | Temporal candidate-window traversal | Reusable bounds; eligible case-gate evaluation |
+| `DataSet` / data access interfaces | Case and expected-count access | Location-oriented expected-count access in supported paths |
+| `CCluster` / result container | Cluster storage and reporting | Synchronization and correctness-sensitive result insertion |
+
+These mappings are architectural descriptions, not claims that every listed upstream class was directly edited. Use a source diff to document exact changed functions and files.
+
+## Correctness and applicability
+
+The case-gate argument applies only when an expansion adds no observed cases to any eligible time window and expected counts are nondecreasing. For the high-rate Poisson likelihood, increasing expected counts at fixed observed counts cannot increase a positive high-rate log-likelihood ratio. This does not justify applying the gate to low-rate or mixed high/low scans. The handling of ties, size restrictions, and secondary reported clusters must also be verified in the actual implementation.
+
+Verification should distinguish (a) matching observed LLR, cluster membership, temporal intervals, geometry and descriptive statistics from (b) matching Monte Carlo-dependent p-values, which require matched simulation configurations.
+
+## Benchmark configuration
+
+Integrated research benchmarks: eight workers for circular/elliptic neighbor construction; 24 workers for observed scanning; Monte Carlo batch size eight for tested circular and elliptic space-time paths. These values describe the reported experiments rather than universal recommended defaults.
+
+---
+
+# Original architectural guide (preserved)
+
 
 
 
@@ -251,6 +289,3 @@ The case and measure arrays are two dimensional arrays that store observed, and 
 
 ####  Top Ranked Clusters
 During the evaluation of real data, a cluster with the greatest excess risk is determined and stored for each centroid. This array of most likely clusters (CCluster objects) is then sorted by greatest log likelihood ratio and the top most clusters are retained then ranked against simulated log likelihood ratios. The class that manages these clusters is named [MostLikelyClustersContainer](calculation/analysis_run/MostLikelyClustersContainer.h).
-
-####  Execution Flow and Relationships
-![image description](Doc/execution-flow.svg)

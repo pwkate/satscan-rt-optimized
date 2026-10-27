@@ -1,3 +1,50 @@
+# SaTScan — Experimental Computational Optimization Fork
+
+> This repository contains modifications to the SaTScan computational engine aimed at reducing execution time for purely spatial and space-time analyses under discrete Poisson model for high-rate clusters.
+## About this fork
+
+The project builds on the original SaTScan source code, retaining its general scan-statistic framework while introducing computational changes to neighbor construction, observed-data scanning, and Monte Carlo evaluation. The work focuses on circular and elliptic scanning configurations. The changes are intended to preserve candidate scanning windows and statistical calculations within the supported, tested analysis settings; equivalence should **not** be assumed for all SaTScan models or settings.
+
+### Main modifications
+
+| Area | Modification | Applicability / qualification |
+| --- | --- | --- |
+| Neighbor construction | Parallel work across centers/shapes; worker-local scratch state | Circular and elliptic scans |
+| Elliptic neighbor storage | Contiguous index storage to reduce allocation overhead | Elliptic scans |
+| Observed-data scan | Parallel evaluation with worker-local state and synchronized results | Tested spatial and space-time paths |
+| Space-time expected counts | Location-oriented memory access layout | Space-time scans |
+| Temporal evaluation | Cache reusable time-window bounds | Space-time scans |
+| Exact case gate | Avoid likelihood evaluation for eligible zero-case spatial expansions | High-rate, single-dataset Poisson space-time settings under documented conditions |
+| Monte Carlo batching | Process up to eight simulated datasets together, sharing invariant neighbor traversal and expected-count accumulation | Tested circular and elliptic space-time paths |
+| Inner-loop optimization | Reduce repeated dispatch/comparator overhead | Primarily purely spatial scans |
+
+The case gate does **not** eliminate neighbor traversal. Its correctness argument has specific assumptions; see the project supplementary methods or implementation notes before applying it to other models.
+
+### Evaluation scope
+
+Research benchmarks covered purely spatial elliptic scanning (999 Monte Carlo replications), circular space-time scanning (999), and elliptic space-time scanning (9, 99, and 999). The original and modified implementations were evaluated under matched analysis settings and replication counts, including elliptic space-time scanning with 999 replications.
+
+Verification examined the observed maximum log-likelihood ratio (LLR), reported cluster statistics, spatial membership, temporal intervals, and scanning-window geometry. In the elliptic space-time analyses, all 17 reference clusters were recovered with matching spatial membership and geometry. At 999 replications, the modified implementation reported one additional **non-significant** cluster; thus the complete reported cluster sets were not identical. Matching replication counts permits Monte Carlo comparisons but does not, by itself, establish identical p-values or randomization sequences.
+
+This configuration deployed 8 workers for circular neighbor construction, 8 for elliptic neighbor construction, and 24 for observed-data scanning. Circular and elliptic space-time Monte Carlo processing used a batch size of 8 simulated datasets per shared traversal. These settings describe the tested benchmarks, not universal defaults or guaranteed optimal configurations. Neighbor-construction workers, observed-scan workers, and Monte Carlo batch size control distinct stages of computation.
+
+### Status and limitations
+
+- This is an experimental research fork derived from the original SaTScan source code, **not an official SaTScan release**. Independently verify results before operational or scientific use.
+- Computational agreement was evaluated for the stated discrete Poisson, high-rate configurations. These tests and the case-gate justification do not establish equivalence for all probability models, low-rate or simultaneous high/low scanning, or every cluster-reporting configuration.
+- The 17 elliptic space-time reference clusters were recovered, but one additional non-significant cluster was reported by the modified MC999 analysis; do not interpret the complete output sets as identical.
+- Runtimes and speedups depend on the hardware, input data, compiler/build settings, and scan parameters. Worker counts and batch size are benchmark-specific settings.
+- Build instructions below are preserved from the upstream documentation and may require adaptation for this fork.
+
+### Documentation
+
+- [Architecture and optimization notes](architectural.md)
+- [Official SaTScan website](https://www.satscan.org/)
+
+---
+
+## Original SaTScan documentation (preserved)
+
 <img src="installers/resources/SaTScan.gif" alt="drawing" width="50"/> SaTScan - Software for the spatial, temporal, and space-time scan statistics
 ====
 SaTScan™ is a free software that analyzes spatial, temporal and space-time data using the spatial, temporal, or space-time scan statistics. It is designed for any of the following interrelated purposes:
@@ -57,4 +104,4 @@ The Java user interface provides the graphical front-end to the native library f
 
 Architecture
 -----------
-See our [architecture document](architectural.md) for an overview of the source code design.
+See the [architecture document](architectural.md) for an overview of the source code design.
