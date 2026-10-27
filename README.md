@@ -16,6 +16,7 @@ The project builds on the original SaTScan source code, retaining its general sc
 | Temporal evaluation | Cache reusable time-window bounds | Space-time scans |
 | Exact case gate | Avoid likelihood evaluation for eligible zero-case spatial expansions | High-rate, single-dataset Poisson space-time settings under documented conditions |
 | Monte Carlo batching | Process up to eight simulated datasets together, sharing invariant neighbor traversal and expected-count accumulation | Tested circular and elliptic space-time paths |
+| Inner-loop optimization | Reduce repeated dispatch/comparator overhead | Primarily purely spatial scans |
 
 The case gate does **not** eliminate neighbor traversal. Its correctness argument has specific assumptions; see the project supplementary methods or implementation notes before applying it to other models.
 
