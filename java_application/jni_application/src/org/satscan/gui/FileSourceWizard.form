@@ -1,0 +1,1430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="_fieldSeparatorButtonGroup">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_fieldSeparatorButtonGroup.add(_commaRadioButton);&#xa;_fieldSeparatorButtonGroup.add(_semiColonRadioButton);&#xa;_fieldSeparatorButtonGroup.add(_whitespaceRadioButton);&#xa;_fieldSeparatorButtonGroup.add(_otherRadioButton);"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="_groupIndicatorButtonGroup">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_groupIndicatorButtonGroup.add(_doubleQuotesRadioButton);&#xa;_groupIndicatorButtonGroup.add(_singleQuotesRadioButton);"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="_import_operation_buttonGroup">
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="_projectionButtonGroup">
+    </Component>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="2"/>
+    <Property name="title" type="java.lang.String" value="Import File Wizard" noResource="true"/>
+    <Property name="modal" type="boolean" value="true"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="_dialog_base_panel" pref="576" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="_dialog_base_panel" alignment="0" pref="461" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="_dialog_base_panel">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
+        <Property name="axis" type="int" value="1"/>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="_main_content_panel">
+          <Properties>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[580, 500]"/>
+            </Property>
+          </Properties>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
+          <SubComponents>
+            <Container class="javax.swing.JPanel" name="_fileSourceSettingsPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="source-settings"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="_file_selection_label" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="_source_filename" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="_browse_source" min="-2" pref="25" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="_expectedFormatScrollPane" alignment="0" pref="556" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="_file_selection_label" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="_source_filename" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="_browse_source" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="_expectedFormatScrollPane" pref="347" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="_file_selection_label">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="12" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Case File:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="_source_filename">
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="file path of data file source"/>
+                  </AccessibilityProperties>
+                </Component>
+                <Component class="javax.swing.JButton" name="_browse_source">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="..." noResource="true"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Browse for source file ..." noResource="true"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[45, 20]"/>
+                    </Property>
+                  </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
+                    <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Browse for source file"/>
+                  </AccessibilityProperties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_browse_source.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {       &#xa;        FileSelectionDialog selectionDialog = new FileSelectionDialog(SaTScanApplication.getInstance(), _input_source_settings.getInputFileType(), SaTScanApplication.getInstance().lastBrowseDirectory);&#xa;        File file = selectionDialog.browse_load(true);&#xa;        if (file != null) {&#xa;            SaTScanApplication.getInstance().lastBrowseDirectory = selectionDialog.getDirectory();&#xa;            _source_filename.setText(file.getAbsolutePath());  &#xa;        }&#xa;    }&#xa;}); "/>
+                  </AuxValues>
+                </Component>
+                <Container class="javax.swing.JScrollPane" name="_expectedFormatScrollPane">
+                  <Properties>
+                    <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_expectedFormatScrollPane.setBorder(null);"/>
+                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                  </AuxValues>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTextPane" name="_expectedFormatTextPane">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="f0" green="f0" red="f0" type="rgb"/>
+                        </Property>
+                        <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xd;&#xa;  &lt;head&gt;&#xd;&lt;/head&gt;&#xd;&#xa;  &lt;body&gt;&#xd;&#xa;    &lt;p style=&quot;margin-top: 0;&quot;&gt;&#xd;&#xd;The expected format of the case file, for the current settings, is:&lt;/p&gt;&#xd;&#xa;    &lt;p style=&quot;margin: 5px 0 0 5px;font-style:italic;font-size:1.01em;font-weight:bold;&quot;&gt;&amp;lt;indentifier&amp;gt;  &amp;lt;count&amp;gt; &amp;lt;date&amp;gt; &amp;lt;covariate 1&amp;gt; ... &amp;lt;covariate N&amp;gt;&lt;/p&gt;&#xa;  &lt;/body&gt;&#xd;&#xa;&lt;/html&gt;&#xd;&#xa;"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_fileFormatPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="file-format"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="_groupIndiocatorGroup" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="jScrollPane1" alignment="1" max="32767" attributes="1"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                                  <Component id="_ignoreRowsTextField" min="-2" pref="42" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="_firstRowColumnHeadersCheckBox" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="fieldSeparatorGroup" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jScrollPane1" min="-2" pref="137" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="_ignoreRowsTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="_firstRowColumnHeadersCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="fieldSeparatorGroup" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="_groupIndiocatorGroup" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="99" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jLabel1">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Sample of the File Content:" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+                  <AuxValues>
+                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                  </AuxValues>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTextArea" name="_fileContentsTextArea">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="columns" type="int" value="20"/>
+                        <Property name="rows" type="int" value="5"/>
+                      </Properties>
+                      <AccessibilityProperties>
+                        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Sampling of source data file contents"/>
+                      </AccessibilityProperties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JLabel" name="jLabel4">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Ignore first" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="_ignoreRowsTextField">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="0" noResource="true"/>
+                  </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="ignore first X rows"/>
+                  </AccessibilityProperties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_ignoreRowsTextField.addFocusListener(new java.awt.event.FocusAdapter() {&#xa;    public void focusLost(java.awt.event.FocusEvent e) {&#xa;        while (_ignoreRowsTextField.getText().length() == 0)&#xa;            if (undo.canUndo()) undo.undo(); else _ignoreRowsTextField.setText(&quot;0&quot;);&#xa;    }&#xa;});&#xa;_ignoreRowsTextField.addKeyListener(new java.awt.event.KeyAdapter() {&#xa;    public void keyTyped(java.awt.event.KeyEvent e) {&#xa;        Utils.validatePostiveNumericKeyTyped(_ignoreRowsTextField, e, 5);&#xa;    }&#xa;});&#xa;_ignoreRowsTextField.getDocument().addUndoableEditListener(new UndoableEditListener() {&#xa;    public void undoableEditHappened(UndoableEditEvent evt) {&#xa;        undo.addEdit(evt.getEdit());&#xa;    }&#xa;});&#xa;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel5">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="rows" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="_firstRowColumnHeadersCheckBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="First row is column name" noResource="true"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                        <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                      </Border>
+                    </Property>
+                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 0, 0, 0]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Container class="javax.swing.JPanel" name="fieldSeparatorGroup">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Field Separator">
+                          <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                            <EtchetBorder/>
+                          </Border>
+                        </TitledBorder>
+                      </Border>
+                    </Property>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="_commaRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="_semiColonRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="_whitespaceRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="_otherRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="_otherFieldSeparatorTextField" min="-2" pref="20" max="-2" attributes="0"/>
+                              <EmptySpace pref="212" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="_commaRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="_semiColonRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="_whitespaceRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="_otherRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="_otherFieldSeparatorTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JRadioButton" name="_commaRadioButton">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Comma" noResource="true"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[0, 0, 0, 0]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="_semiColonRadioButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Semicolon" noResource="true"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[0, 0, 0, 0]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="_whitespaceRadioButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Whitespace" noResource="true"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[0, 0, 0, 0]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="_otherRadioButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Other" noResource="true"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[0, 0, 0, 0]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="_otherFieldSeparatorTextField">
+                      <AccessibilityProperties>
+                        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Other field separator"/>
+                      </AccessibilityProperties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_otherFieldSeparatorTextField.addKeyListener(new java.awt.event.KeyAdapter() {&#xa;    public void keyTyped(java.awt.event.KeyEvent e) {&#xa;        //Utils.validatePostiveNumericKeyTyped(_otherFieldSeparatorTextField, e, 1);&#xa;        enableNavigationButtons();&#xa;    }&#xa;});&#xa;_otherFieldSeparatorTextField.getDocument().addUndoableEditListener(new UndoableEditListener() {&#xa;    public void undoableEditHappened(UndoableEditEvent evt) {&#xa;        undo.addEdit(evt.getEdit());&#xa;        enableNavigationButtons();&#xa;    }&#xa;});"/>
+                      </AuxValues>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="_groupIndiocatorGroup">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Group Indicator">
+                          <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                            <EtchetBorder/>
+                          </Border>
+                        </TitledBorder>
+                      </Border>
+                    </Property>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="_doubleQuotesRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="_singleQuotesRadioButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="_doubleQuotesRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="_singleQuotesRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JRadioButton" name="_doubleQuotesRadioButton">
+                      <Properties>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Double Quotes" noResource="true"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[0, 0, 0, 0]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="_singleQuotesRadioButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Single Quotes" noResource="true"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[0, 0, 0, 0]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_dataMappingPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="data-mapping"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jSplitPane1" max="32767" attributes="0"/>
+                              <Component id="jLabel2" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jSplitPane1" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Container class="javax.swing.JSplitPane" name="jSplitPane1">
+                  <Properties>
+                    <Property name="dividerLocation" type="int" value="170"/>
+                    <Property name="orientation" type="int" value="0"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jSplitPane1.setBorder(null);"/>
+                  </AuxValues>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
+                  <SubComponents>
+                    <Container class="javax.swing.JPanel" name="_dataMappingTopPanel">
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+                          <JSplitPaneConstraints position="top"/>
+                        </Constraint>
+                      </Constraints>
+
+                      <Layout>
+                        <DimensionLayout dim="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="_displayVariablesLabel" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="_displayVariablesComboBox" pref="273" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Component id="jScrollPane2" alignment="1" pref="491" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="_clearSelectionButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                        <DimensionLayout dim="1">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="_displayVariablesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="_displayVariablesComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="_clearSelectionButton" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jScrollPane2" pref="133" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="_displayVariablesLabel">
+                          <Properties>
+                            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                              <ComponentRef name="_displayVariablesComboBox"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Import SaTScan Variables for Analysis Using:" noResource="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JComboBox" name="_displayVariablesComboBox">
+                          <Properties>
+                            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                              <StringArray count="4">
+                                <StringItem index="0" value="Item 1"/>
+                                <StringItem index="1" value="Item 2"/>
+                                <StringItem index="2" value="Item 3"/>
+                                <StringItem index="3" value="Item 4"/>
+                              </StringArray>
+                            </Property>
+                          </Properties>
+                          <AccessibilityProperties>
+                            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
+                          </AccessibilityProperties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_displayVariablesComboBox.addItemListener(new java.awt.event.ItemListener() {&#xa;    public void itemStateChanged(java.awt.event.ItemEvent e) {&#xa;        if (_input_source_settings.getInputFileType() == InputSourceSettings.InputFileType.Control || _input_source_settings.getInputFileType() == InputSourceSettings.InputFileType.Population) {&#xa;            // skip this listener for the control and popuation files&#xa;            return;&#xa;        }&#xa;        if (_displayVariablesComboBox.getItemCount() &gt; 0 &amp;&amp; &#xa;            (_input_source_settings.getInputFileType() == InputSourceSettings.InputFileType.Coordinates || &#xa;            _input_source_settings.getInputFileType() == InputSourceSettings.InputFileType.SpecialGrid)) {&#xa;            if (_displayVariablesComboBox.getSelectedIndex() == 0) {&#xa;              _coordinatesType = Parameters.CoordinatesType.LATLON;&#xa;            } else {&#xa;              _coordinatesType = Parameters.CoordinatesType.CARTESIAN;&#xa;            }&#xa;        }&#xa;        setShowingVariables();&#xa;        enableNavigationButtons();&#xa;    }&#xa;});"/>
+                          </AuxValues>
+                        </Component>
+                        <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+                          <AuxValues>
+                            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                          </AuxValues>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                          <SubComponents>
+                            <Component class="javax.swing.JTable" name="_mapping_table">
+                              <Properties>
+                                <Property name="rowSelectionAllowed" type="boolean" value="false"/>
+                              </Properties>
+                              <AccessibilityProperties>
+                                <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Import variables mapping"/>
+                              </AccessibilityProperties>
+                              <AuxValues>
+                                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_mapping_table.setModel(new VariableMappingTableModel(_import_variables));"/>
+                              </AuxValues>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                        <Component class="javax.swing.JButton" name="_clearSelectionButton">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Clear" noResource="true"/>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_clearSelectionButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        clearSaTScanVariableFieldIndexes();&#xa;    }&#xa;});"/>
+                          </AuxValues>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="_dataMappingBottomPanel">
+                      <Properties>
+                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                      </Properties>
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+                          <JSplitPaneConstraints position="right"/>
+                        </Constraint>
+                      </Constraints>
+
+                      <Layout>
+                        <DimensionLayout dim="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="_importTableScrollPane" pref="554" max="32767" attributes="0"/>
+                          </Group>
+                        </DimensionLayout>
+                        <DimensionLayout dim="1">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="_importTableScrollPane" alignment="0" pref="209" max="32767" attributes="0"/>
+                          </Group>
+                        </DimensionLayout>
+                      </Layout>
+                      <SubComponents>
+                        <Container class="javax.swing.JScrollPane" name="_importTableScrollPane">
+                          <AuxValues>
+                            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                          </AuxValues>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                          <SubComponents>
+                            <Component class="javax.swing.JTable" name="_source_data_table">
+                              <Properties>
+                                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                                  <Table columnCount="4" rowCount="4">
+                                    <Column editable="true" title="Title 1" type="java.lang.Object"/>
+                                    <Column editable="true" title="Title 2" type="java.lang.Object"/>
+                                    <Column editable="true" title="Title 3" type="java.lang.Object"/>
+                                    <Column editable="true" title="Title 4" type="java.lang.Object"/>
+                                  </Table>
+                                </Property>
+                                <Property name="toolTipText" type="java.lang.String" value="Displaying at most 200 rows from data file."/>
+                                <Property name="autoResizeMode" type="int" value="0"/>
+                                <Property name="rowSelectionAllowed" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                      </SubComponents>
+                    </Container>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JLabel" name="jLabel2">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="(*) Column not in the source file, but can be used as a SaTScan variable."/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_linelistPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="linelist-settings"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jSplitPane2" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jSplitPane2" pref="394" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Container class="javax.swing.JSplitPane" name="jSplitPane2">
+                  <Properties>
+                    <Property name="dividerLocation" type="int" value="250"/>
+                    <Property name="orientation" type="int" value="0"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jSplitPane2.setBorder(null);"/>
+                  </AuxValues>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
+                  <SubComponents>
+                    <Container class="javax.swing.JPanel" name="_line_list_panel_settings">
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+                          <JSplitPaneConstraints position="top"/>
+                        </Constraint>
+                      </Constraints>
+
+                      <Layout>
+                        <DimensionLayout dim="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jScrollPane4" pref="471" max="32767" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="_remove_linelist" max="32767" attributes="0"/>
+                                      <Component id="_add_linelist" max="32767" attributes="0"/>
+                                      <Component id="_up_linelist" max="32767" attributes="0"/>
+                                      <Component id="_down_linelist" min="-2" pref="73" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Component id="_casefile_linelist" max="32767" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="_linelist_help" min="-2" pref="31" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="_label_other_linelist_variables" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="_individuals_line_list_cache_label" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="_individuals_line_list_cache" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="_browse_individuals_cache" min="-2" pref="33" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="_combobox_eventid" max="32767" attributes="0"/>
+                                              <Component id="_label_individual" min="-2" pref="125" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="_label_descriptive_lat" max="32767" attributes="0"/>
+                                              <Component id="_combobox_event_y" min="-2" pref="144" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="_label_descriptive_long" max="32767" attributes="0"/>
+                                              <Component id="_combobox_event_x" min="-2" pref="152" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                        <DimensionLayout dim="1">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="_linelist_help" pref="0" max="32767" attributes="0"/>
+                                      <Component id="_casefile_linelist" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="_label_individual" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="_label_descriptive_lat" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="_label_descriptive_long" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="_combobox_eventid" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="_combobox_event_y" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="_combobox_event_x" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="_individuals_line_list_cache" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="_browse_individuals_cache" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="_individuals_line_list_cache_label" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="_label_other_linelist_variables" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="_add_linelist" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="_remove_linelist" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="_up_linelist" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="_down_linelist" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jScrollPane4" pref="121" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JCheckBox" name="_casefile_linelist">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="OPTIONAL: Import descriptive line list variables for output files."/>
+                            <Property name="toolTipText" type="java.lang.String" value="*  For Cluster Line List, KML, and HMTL Google Map output files only, not used by the SaTScan analysis."/>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_casefile_linelist.addItemListener(new java.awt.event.ItemListener() {&#xd;&#xa;    public void itemStateChanged(java.awt.event.ItemEvent e) {&#xd;&#xa;        enableLinelistPanels();&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="_label_individual">
+                          <Properties>
+                            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                              <ComponentRef name="_combobox_eventid"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Individual (optional)"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JComboBox" name="_combobox_eventid">
+                          <Properties>
+                            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                              <StringArray count="1">
+                                <StringItem index="0" value="not set"/>
+                              </StringArray>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[125, 20]"/>
+                            </Property>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_combobox_eventid.addItemListener(new java.awt.event.ItemListener() {&#xd;&#xa;   public void itemStateChanged(java.awt.event.ItemEvent e) {&#xd;&#xa;      enableLinelistPanels();&#xd;&#xa;   }&#xd;&#xa; });"/>
+                            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JComboBox" name="_combobox_event_y">
+                          <Properties>
+                            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                              <StringArray count="1">
+                                <StringItem index="0" value="latitude not set"/>
+                              </StringArray>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[125, 20]"/>
+                            </Property>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JComboBox" name="_combobox_event_x">
+                          <Properties>
+                            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                              <StringArray count="1">
+                                <StringItem index="0" value="longitude not set"/>
+                              </StringArray>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[125, 20]"/>
+                            </Property>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                          </AuxValues>
+                        </Component>
+                        <Container class="javax.swing.JScrollPane" name="jScrollPane4">
+                          <AuxValues>
+                            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                          </AuxValues>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                          <SubComponents>
+                            <Component class="javax.swing.JTable" name="_mapping_table_linelist">
+                              <Properties>
+                                <Property name="selectionMode" type="int" value="0"/>
+                              </Properties>
+                              <AuxValues>
+                                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_mapping_table_linelist.putClientProperty(&quot;terminateEditOnFocusLost&quot;, Boolean.TRUE);&#xd;&#xa;ListSelectionModel selectionModel = _mapping_table_linelist.getSelectionModel();&#xd;&#xa;selectionModel.addListSelectionListener(new ListSelectionListener() {&#xd;&#xa;    public void valueChanged(ListSelectionEvent e) {&#xd;&#xa;        if (e.getValueIsAdjusting())&#xd;&#xa;            return;&#xd;&#xa;        enableLinelistPanels();&#xd;&#xa;    }&#xd;&#xa;});"/>
+                              </AuxValues>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                        <Component class="javax.swing.JButton" name="_add_linelist">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Add"/>
+                          </Properties>
+                          <AccessibilityProperties>
+                            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Add line list item"/>
+                          </AccessibilityProperties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_add_linelist.addActionListener(new java.awt.event.ActionListener() {&#xd;&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xd;&#xa;        WaitCursor waitCursor = new WaitCursor(FileSourceWizard.this);&#xd;&#xa;        try {&#xd;&#xa;            // Add record to table.&#xd;&#xa;            LinelistMappingTableModel model = (LinelistMappingTableModel) _mapping_table_linelist.getModel();&#xd;&#xa;            model.addRow(new Object[]{ _unassigned_variable, _default_linelist_label });&#xd;&#xa;            _sticky_ll_labels.add(false);&#xd;&#xa;            _mapping_table_linelist.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);&#xd;&#xa;            enableLinelistPanels();&#xd;&#xa;        } catch (Throwable t) {&#xd;&#xa;            new ExceptionDialog(FileSourceWizard.this, t).setVisible(true);&#xd;&#xa;        } finally {&#xd;&#xa;            waitCursor.restore();&#xd;&#xa;        }&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="_remove_linelist">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Remove"/>
+                          </Properties>
+                          <AccessibilityProperties>
+                            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Remove line list item"/>
+                          </AccessibilityProperties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_remove_linelist.addActionListener(new java.awt.event.ActionListener() {&#xd;&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xd;&#xa;        DefaultTableModel model = (DefaultTableModel) _mapping_table_linelist.getModel();&#xd;&#xa;        int selected = _mapping_table_linelist.getSelectedRow();&#xd;&#xa;        _sticky_ll_labels.remove(selected);&#xd;&#xa;        model.removeRow(selected);&#xd;&#xa;        if (_mapping_table_linelist.getRowCount() &gt; 0)&#xd;&#xa;            _mapping_table_linelist.setRowSelectionInterval(Integer.max(0, selected - 1), Integer.max(0, selected - 1));&#xd;&#xa;        enableLinelistPanels();&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="_up_linelist">
+                          <Properties>
+                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                              <Image iconType="3" name="/arrow-up.png"/>
+                            </Property>
+                          </Properties>
+                          <AccessibilityProperties>
+                            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Move item up"/>
+                          </AccessibilityProperties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_up_linelist.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        // move rows from the index to index into the position index -1&#xa;        DefaultTableModel model = (DefaultTableModel)_mapping_table_linelist.getModel();&#xa;        int selected = _mapping_table_linelist.getSelectedRow();&#xa;        if (selected &gt; 0) {&#xa;            model.moveRow(selected, selected, selected - 1);&#xa;            _mapping_table_linelist.setRowSelectionInterval(selected - 1, selected - 1);  &#xa;            enableLinelistPanels();&#xa;            if (_up_linelist.isEnabled()) _up_linelist.requestFocusInWindow();&#xa;        }&#xa;    }&#xa;});"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="_down_linelist">
+                          <Properties>
+                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                              <Image iconType="3" name="/arrow-down.png"/>
+                            </Property>
+                          </Properties>
+                          <AccessibilityProperties>
+                            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="move item down"/>
+                          </AccessibilityProperties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_down_linelist.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent evt) {&#xa;        // move rows from the index to index into the position index -1&#xa;        DefaultTableModel model = (DefaultTableModel)_mapping_table_linelist.getModel();&#xa;        int selected = _mapping_table_linelist.getSelectedRow();&#xa;        if (selected &lt; _mapping_table_linelist.getModel().getRowCount() - 1){&#xa;            model.moveRow(selected, selected, selected + 1);&#xa;            // set selection to the new position&#xa;            _mapping_table_linelist.setRowSelectionInterval(selected + 1, selected + 1);&#xa;            enableLinelistPanels();&#xa;            if (_down_linelist.isEnabled()) _down_linelist.requestFocusInWindow();&#xa;        }&#xa;    }&#xa;});&#xa;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="_label_descriptive_lat">
+                          <Properties>
+                            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                              <ComponentRef name="_combobox_event_y"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Descriptive Latitude (optional)"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="_label_descriptive_long">
+                          <Properties>
+                            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                              <ComponentRef name="_combobox_event_x"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Descriptive Longitude (optional)"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="_linelist_help">
+                          <Properties>
+                            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                              <Image iconType="3" name="/help.png"/>
+                            </Property>
+                            <Property name="toolTipText" type="java.lang.String" value="What is this?"/>
+                          </Properties>
+                          <AccessibilityProperties>
+                            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Help On This."/>
+                          </AccessibilityProperties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="_linelist_help.addActionListener(new java.awt.event.ActionListener() {&#xd;&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xd;&#xa;        StringBuilder message = new StringBuilder();&#xd;&#xa;        message.append(&quot;The case file can contain line list data which is not used when performing analysis.\n&quot;);&#xd;&#xa;        message.append(&quot;The line list data can include two types of information:\n&quot;);&#xd;&#xa;        message.append(&quot;1) Individual Identification:\n&quot;);&#xd;&#xa;        message.append(&quot; - Uniquely identifies an individual and its latitude/longitude coordinates.\n&quot;);&#xd;&#xa;        message.append(&quot; - Coordinates are optional and only used to place the event in the KML output.\n&quot;);&#xd;&#xa;        message.append(&quot;2) Record Characteristics:\n&quot;);&#xd;&#xa;        message.append(&quot; - Attributes of the individual or record (age, gender, status, etc).\n\n&quot;);&#xd;&#xa;        message.append(&quot;When an Individual column is defined, the number of cases for each record must be one;\n&quot;);&#xd;&#xa;        message.append(&quot;since you are indicating each record is a unique record.\n&quot;);&#xd;&#xa;        message.append(&quot;This restriction will be enforced when the analysis is executed.\n&quot;);&#xd;&#xa;        JOptionPane.showMessageDialog(FileSourceWizard.this, message.toString(), &quot;Note&quot;, JOptionPane.INFORMATION_MESSAGE);&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="_label_other_linelist_variables">
+                          <Properties>
+                            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                              <ComponentRef name="_mapping_table_linelist"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Add other line list variables:"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JTextField" name="_individuals_line_list_cache">
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_individuals_line_list_cache.setText(_suggested_import_filename.getAbsolutePath());"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="_browse_individuals_cache">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="..." noResource="true"/>
+                            <Property name="toolTipText" type="java.lang.String" value="Browse for line list individuals cache file ..."/>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_browse_individuals_cache.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        List&lt;InputFileFilter&gt; filters = new ArrayList&lt;InputFileFilter&gt;();&#xa;        filters.add(new InputFileFilter(&quot;txt&quot;,&quot;Text Files (*.txt)&quot;));&#xa;        filters.add(new InputFileFilter(&quot;csv&quot;,&quot;CSV Files (*.csv)&quot;));&#xa;        FileSelectionDialog select = new FileSelectionDialog(SaTScanApplication.getInstance(), &quot;Select Individuals Cache File&quot;, filters, SaTScanApplication.getInstance().lastBrowseDirectory);&#xa;        File file = select.browse_saveas();&#xa;        if (file != null) {&#xa;            SaTScanApplication.getInstance().lastBrowseDirectory = select.getDirectory();&#xa;            _individuals_line_list_cache.setText(file.getAbsolutePath());  &#xa;        }&#xa;    }&#xa;});&#xa;"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="_individuals_line_list_cache_label">
+                          <Properties>
+                            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                              <ComponentRef name="_individuals_line_list_cache"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Individuals Cache (optional):"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="_source_table_panel">
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+                          <JSplitPaneConstraints position="right"/>
+                        </Constraint>
+                      </Constraints>
+
+                      <Layout>
+                        <DimensionLayout dim="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jScrollPane3" alignment="0" pref="554" max="32767" attributes="0"/>
+                          </Group>
+                        </DimensionLayout>
+                        <DimensionLayout dim="1">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jScrollPane3" pref="142" max="32767" attributes="0"/>
+                                  <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                        </DimensionLayout>
+                      </Layout>
+                      <SubComponents>
+                        <Container class="javax.swing.JScrollPane" name="jScrollPane3">
+                          <AccessibilityProperties>
+                            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Sampling of source data file"/>
+                          </AccessibilityProperties>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                          <SubComponents>
+                            <Component class="javax.swing.JTable" name="_source_data_table_linelist">
+                              <Properties>
+                                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                                  <Table columnCount="4" rowCount="4">
+                                    <Column editable="true" title="Title 1" type="java.lang.Object"/>
+                                    <Column editable="true" title="Title 2" type="java.lang.Object"/>
+                                    <Column editable="true" title="Title 3" type="java.lang.Object"/>
+                                    <Column editable="true" title="Title 4" type="java.lang.Object"/>
+                                  </Table>
+                                </Property>
+                                <Property name="toolTipText" type="java.lang.String" value="Displaying at most 50 rows from data file."/>
+                                <Property name="autoResizeMode" type="int" value="0"/>
+                                <Property name="rowSelectionAllowed" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                      </SubComponents>
+                    </Container>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_outputSettingsPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="output-settings"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="_progressBar" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                                  <Component id="_outputDirectoryTextField" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="_changeSaveDirectoryButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="_execute_import_now" max="32767" attributes="0"/>
+                              <Component id="_save_import_settings" alignment="0" pref="556" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                          <Component id="_execute_import_now" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="_outputDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="_changeSaveDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="_save_import_settings" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="234" max="-2" attributes="0"/>
+                          <Component id="_progressBar" min="-2" pref="30" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JRadioButton" name="_execute_import_now">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="_import_operation_buttonGroup"/>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="Save imported input file as:"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_execute_import_now.addItemListener(new java.awt.event.ItemListener() {&#xa;    public void itemStateChanged(java.awt.event.ItemEvent e) {&#xa;        if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)&#xa;            executeButton.setText(&quot;Import&quot;);&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JTextField" name="_outputDirectoryTextField">
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
+                    <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Filename path of generated import file"/>
+                  </AccessibilityProperties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_outputDirectoryTextField.setText(_suggested_import_filename.getAbsolutePath());"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="_changeSaveDirectoryButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Change" noResource="true"/>
+                  </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Browser for location and filename of import file"/>
+                  </AccessibilityProperties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_changeSaveDirectoryButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        FileSelectionDialog select = new FileSelectionDialog(org.satscan.gui.SaTScanApplication.getInstance(), &quot;Select directory to save imported file&quot;, org.satscan.gui.SaTScanApplication.getInstance().lastBrowseDirectory);&#xa;        File file = select.browse_saveas();&#xa;        if (file != null) {&#xa;            org.satscan.gui.SaTScanApplication.getInstance().lastBrowseDirectory = select.getDirectory();&#xa;            _outputDirectoryTextField.setText(file.getAbsolutePath());&#xa;            _prefs.put(_prefLastBackup, select.getDirectory().getAbsolutePath());&#xa;        }&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="_save_import_settings">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="_import_operation_buttonGroup"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Save these settings and read directly from file source when running the analysis."/>
+                    <Property name="verticalAlignment" type="int" value="1"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="_save_import_settings.addItemListener(new java.awt.event.ItemListener() {&#xa;    public void itemStateChanged(java.awt.event.ItemEvent e) {&#xa;        if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED)&#xa;            executeButton.setText(&quot;Ok&quot;);&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JProgressBar" name="_progressBar">
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="_button_cards_panel">
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
+          <SubComponents>
+            <Container class="javax.swing.JPanel" name="_file_source_buttons_panel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="source-settings-buttons"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="acceptButton" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace pref="238" max="32767" attributes="0"/>
+                          <Component id="clearInputSettigs" min="-2" pref="112" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="nextButtonSource" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="acceptButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="nextButtonSource" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="clearInputSettigs" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="acceptButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Ok" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="acceptButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        // set close status = Closed?&#xa;        setVisible(false);&#xa;    }&#xa;});&#xa;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="nextButtonSource">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Next &gt;" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="nextButtonSource.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        nextPanel();&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="clearInputSettigs">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Clear Import" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="clearInputSettigs.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        _input_source_settings.reset();&#xa;        clearInputSettigs.setEnabled(_input_source_settings.isSet());&#xa;        clearSaTScanVariableFieldIndexes();&#xa;        _execute_import_now.setSelected(true);&#xa;        _needs_import_save = true;&#xa;        _expectedFormatTextPane.setText(getFileExpectedFormatHtml());            &#xa;        _expectedFormatTextPane.setCaretPosition(0);&#xa;        nextButtonSource.setText(&quot;Next &gt;&quot;);&#xa;        acceptButton.requestFocus();&#xa;    }&#xa;});&#xa;"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_file_format_buttons_panel">
+              <Properties>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[438, 40]"/>
+                </Property>
+              </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="file-format-buttons"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace pref="360" max="32767" attributes="0"/>
+                          <Component id="previousButtonCSV" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="nextButtonCSV" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="nextButtonCSV" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="previousButtonCSV" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="previousButtonCSV">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="&lt; Previous" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="previousButtonCSV.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        previousPanel();&#xa;    }&#xa;});&#xa;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="nextButtonCSV">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Next &gt;" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="nextButtonCSV.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        nextPanel();&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_data_mapping_buttons_panel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="data-mapping-buttons"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="360" max="32767" attributes="0"/>
+                          <Component id="previousButtonMapping" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="nextButtonMapping" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="nextButtonMapping" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="previousButtonMapping" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="previousButtonMapping">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="&lt; Previous" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="previousButtonMapping.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        previousPanel();&#xa;    }&#xa;});&#xa;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="nextButtonMapping">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Next &gt;" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="nextButtonMapping.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        nextPanel();&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_linelist_settings_buttons_panel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="linelist-settings-buttons"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace pref="360" max="32767" attributes="0"/>
+                          <Component id="previousButtonLinelist" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="nextButtonLinelist" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="nextButtonLinelist" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="previousButtonLinelist" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="previousButtonLinelist">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="&lt; Previous" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="previousButtonLinelist.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        previousPanel();&#xa;    }&#xa;});&#xa;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="nextButtonLinelist">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Next &gt;" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="nextButtonLinelist.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        nextPanel();&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="_output_settings_buttons_panel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="output-settings-buttons"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cancelButton" min="-2" pref="85" max="-2" attributes="0"/>
+                          <EmptySpace pref="272" max="32767" attributes="0"/>
+                          <Component id="previousButtonOutSettings" min="-2" pref="93" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="executeButton" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="previousButtonOutSettings" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="executeButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="previousButtonOutSettings">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="&lt; Previous" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="previousButtonOutSettings.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        previousPanel();&#xa;    }&#xa;});&#xa;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="executeButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Import" noResource="true"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="executeButton.addActionListener(new java.awt.event.ActionListener() {&#xa;    public void actionPerformed(java.awt.event.ActionEvent e) {&#xa;        try {&#xa;            if (_execute_import_now.isSelected()) {&#xa;                try {&#xa;                    createDestinationInformation();&#xa;                } catch (IOException i) {&#xa;                    JOptionPane.showMessageDialog(FileSourceWizard.this,&#xa;                            &quot;The import wizard encountered an error attempting to create the import file.\n&quot; +&#xa;                            &quot;This is most likely occuring because write permissions are not granted for\n&quot; +&#xa;                            &quot;specified directory. Please check path or review user permissions for specified directory.\n&quot;, &quot;Note&quot;, JOptionPane.WARNING_MESSAGE);&#xa;                    return;&#xa;                }&#xa;                ImportTask task = new ImportTask();&#xa;                task.addPropertyChangeListener(FileSourceWizard.this);&#xa;                task.execute();&#xa;                _needs_import_save = true;&#xa;                _refresh_related_settings = true;&#xa;            } else {&#xa;                _needs_import_save = true;&#xa;                _refresh_related_settings = true;&#xa;                setVisible(false);&#xa;            }&#xa;        } catch (Throwable t) {&#xa;            new ExceptionDialog(FileSourceWizard.this, t).setVisible(true);&#xa;        }&#xa;    }&#xa;});"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JButton" name="cancelButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Cancel"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

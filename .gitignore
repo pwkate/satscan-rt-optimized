@@ -1,0 +1,42 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+
+# Build output
+Debug/
+Release/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+# External build dependency — required for local VS build,
+# but not included in the original SaTScan 10.3.3 source distribution
+boost/
+
+# Compiled/intermediate files
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.ipdb
+*.iobj
+*.tlog
+*.lastbuildstate
+*.log
+
+# Executables and libraries
+*.exe
+*.dll
+*.lib
+*.exp
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+*~

@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="SaTScanCompare.exe"/>
+    <OBJFILES value="SaTScanCompare.obj Main.obj Options.obj QueueWindow.obj 
+      QueueItemDefinition.obj mexcel.obj"/>
+    <RESFILES value="SaTScanCompare.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) Main.dfm Options.dfm QueueWindow.dfm QueueItemDefinition.dfm"/>
+    <LIBFILES value="..\..\zero.dimension\zd546.lib"/>
+    <LIBRARIES value="TSGC5201.lib Vcl50.lib"/>
+    <SPARELIBS value="Vcl50.lib TSGC5201.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi Qrpt50.bpi Vcldb50.bpi Vclbde50.bpi ibsmp50.bpi 
+      vcldbx50.bpi TeeUI50.bpi TeeDB50.bpi Tee50.bpi TeeQR50.bpi VCLIB50.bpi 
+      bcbie50.bpi vclie50.bpi Inetdb50.bpi Inet50.bpi NMFast50.bpi dclocx50.bpi 
+      bcb2kaxserver50.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value="INTEL_BASED"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="SaTScanCompare.cpp"/>
+    <INCLUDEPATH value="&quot;C:\Program Files\Borland\CBuilder5\Projects\&quot;;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\TopGrid;..\..\zero.dimension"/>
+    <LIBPATH value="&quot;C:\Program Files\Borland\CBuilder5\Projects\&quot;;$(BCB)\lib\obj;$(BCB)\lib;..\..\zero.dimension;$(BCB)\TopGrid"/>
+    <WARNINGS value="-w-par -w-8027 -w-8026"/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Q -Vx -Ve -X- -a8 -5 -b- -k- -vi -c -tW 
+      -tWM"/>
+    <PFLAGS value="-$Y- -$L- -$D- -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -Gn"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=15
+Item0=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\TopGrid;..\..\zero.dimension
+Item1=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\TopGrid;C:\prj\satscan.development\zero.dimension
+Item2=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\include;$(BCB)\include\vcl;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item3=..\..\misc\Batch Scheduler;C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\include;$(BCB)\include\vcl;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item4=C:\Program Files\Borland\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item5=$(BCB)\include;$(BCB)\include\vcl;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item6=$(BCB)\include;$(BCB)\include\vcl;\\Nfse\imsdev\zd
+Item7=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\include;$(BCB)\include\vcl;\\Nfse\imsdev\zd
+Item8=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\include;$(BCB)\include\vcl;C:\Zd\;C:\Program Files\Top Support\TopGrid 2.01 CBuilder5\Lib\
+Item9=C:\Program Files\Borland\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl;C:\Zd\;C:\Program Files\Top Support\TopGrid 2.01 CBuilder5\Lib\
+Item10=C:\prj\spreadsheeteditor\;$(BCB)\include;$(BCB)\include\vcl;C:\Zd\;C:\Program Files\Top Support\TopGrid 2.01 CBuilder5\Lib
+Item11=C:\prj\spreadsheeteditor\;$(BCB)\include;$(BCB)\include\vcl;C:\Zd\
+Item12=C:\prj\spreadsheeteditor\;$(BCB)\include;$(BCB)\include\vcl;C:\Zd
+Item13=C:\prj\spreadsheeteditor\;$(BCB)\include;$(BCB)\include\vcl
+Item14=C:\prj\spreadsheeteditor;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=16
+Item0=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\lib\obj;$(BCB)\lib;..\..\zero.dimension;$(BCB)\TopGrid
+Item1=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\lib\obj;$(BCB)\lib;C:\prj\satscan.development\zero.dimension;$(BCB)\TopGrid
+Item2=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\lib\obj;$(BCB)\lib;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item3=..\..\misc\Batch Scheduler;C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\lib\obj;$(BCB)\lib;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item4=C:\Program Files\Borland\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item5=$(BCB)\lib\obj;$(BCB)\lib;\\Nfse\imsdev\zd;$(BCB)\TopGrid
+Item6=$(BCB)\lib\obj;$(BCB)\lib;\\Nfse\imsdev\zd
+Item7=C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\lib\obj;$(BCB)\lib;\\Nfse\imsdev\zd
+Item8=C:\Program Files\Top Support\TopGrid 2.01 CBuilder5\Lib\;C:\Program Files\Borland\CBuilder5\Projects\;$(BCB)\lib\obj;$(BCB)\lib;C:\Zd\
+Item9=C:\Program Files\Borland\CBuilder5\Projects\;C:\Program Files\Top Support\TopGrid 2.01 CBuilder5\Lib\;$(BCB)\lib\obj;$(BCB)\lib;C:\Zd\
+Item10=C:\Program Files\Borland\CBuilder5\Projects;C:\Program Files\Top Support\TopGrid 2.01 CBuilder5\Lib\;$(BCB)\lib\obj;$(BCB)\lib;C:\Zd\
+Item11=C:\prj\spreadsheeteditor\;..\..\..\Top Support\TopGrid 2.01 CBuilder5\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Zd\;C:\Program Files\Top Support\TopGrid 2.01 CBuilder5\Lib
+Item12=C:\prj\spreadsheeteditor\;..\..\..\Top Support\TopGrid 2.01 CBuilder5\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Zd\
+Item13=C:\prj\spreadsheeteditor\;..\..\..\Top Support\TopGrid 2.01 CBuilder5\Lib;$(BCB)\lib\obj;$(BCB)\lib;C:\Zd
+Item14=C:\prj\spreadsheeteditor\;..\..\..\Top Support\TopGrid 2.01 CBuilder5\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item15=C:\prj\spreadsheeteditor;..\..\..\Top Support\TopGrid 2.01 CBuilder5\Lib;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=2
+Item0=$(BCB)\source\vcl
+Item1=$(BCB)\source\vcl;Z:\zd540
+
+[HistoryLists\hlConditionals]
+Count=4
+Item0=INTEL_BASED
+Item1=INTEL_BASED;_DEBUG
+Item2=_DEBUG;INTEL_BASED
+Item3=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

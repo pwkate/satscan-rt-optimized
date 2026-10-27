@@ -1,0 +1,48 @@
+#!/bin/sh
+
+### # Check for minimum number of arguments.
+### REQUIRED_ARGS=1 # Script requires 3 argument
+### if [ $# -lt "$REQUIRED_ARGS" ]
+### then
+###   echo "Usage: `basename $0` <satscan_src directory> <boost directory> <binaries output directory>])"
+###   echo "   example: `basename $0` /Users/satscsvc/prj/satscan.development/satscan /Users/satscsvc/prj/boost/boost_1_81_0 /Users/satscsvc/prj/satscan.development/binaries/mac"
+###   exit 1
+### fi
+
+(
+cpp_compiler="/usr/bin/g++"
+c_compiler="/usr/bin/gcc"
+osx_min_version="-mmacosx-version-min=10.13"
+binaries="${3:-/Users/satscsvc/prj/satscan.development/binaries/mac}"
+satscan_src="${1:-/Users/satscsvc/prj/satscan.development/satscan}"
+boost_src="${2:-/Users/satscsvc/prj/boost/boost_1_81_0}"
+processors="-j2"
+
+rm -f $binaries/*
+
+
+# Intel command-line binary
+echo building SaTScan for x86_64 64-bit system
+./makescript.mac.sh $binaries/satscan_x86_64 $satscan_src $boost_src -m64 -O3 $cpp_compiler $c_compiler "-arch x86_64" $osx_min_version $processors
+
+# M1 command-line binary
+echo building SaTScan for M1 system
+./makescript.mac.sh $binaries/satscan_arm64 $satscan_src $boost_src -m64 -O3 $cpp_compiler $c_compiler "-arch arm64" $osx_min_version $processors
+
+# Intel JNI libraries
+echo building SaTScan shared object for x86_64 64-bit system
+./makescript.so.mac.sh $binaries/libsatscan.jnilib $satscan_src $boost_src -m64 -O3 $cpp_compiler $c_compiler "-arch x86_64" $osx_min_version $processors
+
+# codesign binaries
+security unlock-keychain $HOME/Library/Keychains/login.keychain
+codesign --force -v --deep -s "Developer ID Application: Information Management Services, Inc. (VF82MCMA83)" $binaries/satscan_x86_64
+codesign --force -v --deep -s "Developer ID Application: Information Management Services, Inc. (VF82MCMA83)" $binaries/satscan_arm64
+
+# Create universal binary for command-line.
+echo creating universal binary for x86_64 and arm64.
+lipo -create $binaries/satscan_x86_64 $binaries/satscan_arm64 -output $binaries/satscan
+rm $binaries/satscan_x86_64 $binaries/satscan_arm64
+codesign --force -v --deep -s "Developer ID Application: Information Management Services, Inc. (VF82MCMA83)" $binaries/satscan
+codesign --force -v --deep -s "Developer ID Application: Information Management Services, Inc. (VF82MCMA83)" $binaries/libsatscan.jnilib
+
+) 1> build.stdout 2> build.stderr
