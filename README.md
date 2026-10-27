@@ -43,7 +43,7 @@ This configuration deployed 8 workers for circular neighbor construction, 8 for 
 
 ---
 
-## Original SaTScan documentation (preserved)
+## Original SaTScan documentation (Source preserved)
 
 <img src="installers/resources/SaTScan.gif" alt="drawing" width="50"/> SaTScan - Software for the spatial, temporal, and space-time scan statistics
 ====
