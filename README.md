@@ -1,24 +1,49 @@
 # SaTScan — Experimental Computational Optimization Fork
 
-> This repository contains modifications to the SaTScan computational engine aimed at reducing execution time for purely spatial and space-time analyses under discrete Poisson model for high-rate clusters.
+> This repository contains modifications to the SaTScan computational engine aimed at reducing execution time for purely spatial and space-time analyses under the discrete Poisson model for high-rate clusters.
+
 ## About this fork
 
-The project builds on the original SaTScan source code, retaining its general scan-statistic framework while introducing computational changes to neighbor construction, observed-data scanning, and Monte Carlo evaluation. The work focuses on circular and elliptic scanning configurations. The changes are intended to preserve candidate scanning windows and statistical calculations within the supported, tested analysis settings; equivalence should **not** be assumed for all SaTScan models or settings.
+The project builds on the original SaTScan source code, retaining its general scan-statistic framework while introducing computational changes to neighbor construction, observed-data scanning, and Monte Carlo evaluation. The work focuses on circular and elliptic scanning configurations. The changes are intended to preserve candidate scanning windows and statistical calculations within the tested analysis settings; equivalence should **not** be assumed for all SaTScan models or settings.
+
+### Tested scope
+
+Results were compared with unmodified SaTScan v10.3.3 only for:
+
+- discrete Poisson model, high-rate scanning, one data set, no relative-risk threshold;
+- purely spatial analyses (circular and elliptic);
+- retrospective space-time analyses (circular and elliptic) without time-stratified adjustment and without inclusion of purely spatial or purely temporal clusters.
 
 ### Main modifications
 
-| Area | Modification | Applicability / qualification |
-| --- | --- | --- |
-| Neighbor construction | Parallel work across centers/shapes; worker-local scratch state | Circular and elliptic scans |
-| Elliptic neighbor storage | Contiguous index storage to reduce allocation overhead | Elliptic scans |
-| Observed-data scan | Parallel evaluation with worker-local state and synchronized results | Tested spatial and space-time paths |
-| Space-time expected counts | Location-oriented memory access layout | Space-time scans |
-| Temporal evaluation | Cache reusable time-window bounds | Space-time scans |
-| Exact case gate | Avoid likelihood evaluation for eligible zero-case spatial expansions | High-rate, single-dataset Poisson space-time settings under documented conditions |
-| Monte Carlo batching | Process up to eight simulated datasets together, sharing invariant neighbor traversal and expected-count accumulation | Tested circular and elliptic space-time paths |
-| Inner-loop optimization | Reduce repeated dispatch/comparator overhead | Primarily purely spatial scans |
+| Area | Modification | Active in | Tested |
+| --- | --- | --- | --- |
+| Neighbor construction | Parallel construction across centers/shapes (up to 8 workers, fixed in code); worker-local scratch state | All analyses using circular or elliptic windows | Tested scope only |
+| Elliptic neighbor storage | Contiguous index storage, with an offset per scanning center | All elliptic analyses | Tested scope only |
+| Observed-data scan | Parallel evaluation of scanning centers (24 workers, fixed in code) with worker-local state and synchronized result insertion | Purely spatial and space-time analyses, **all probability models** | Tested scope only |
+| Observed-data case gate | Skips temporal-window evaluation for spatial expansions that add no observed cases | Configurations meeting the case-gate conditions below | Tested scope only |
+| Monte Carlo case gate | Skips candidate-window evaluation for expansions that add no simulated cases; stops accumulating after the last neighbor containing cases | Configurations meeting the case-gate conditions below | Tested scope only |
+| Monte Carlo window-level case gate | When an added location contains cases, evaluates only the temporal windows whose case count changed | Configurations meeting the case-gate conditions below | Tested scope only |
+| Monte Carlo batching | Processes 4 simulated datasets per spatial-neighbor traversal, sharing expected-count accumulation; case counts, window evaluations and maximum LLR remain separate per replication | Configurations meeting the case-gate conditions below | Tested scope only |
+| Space-time expected counts | Location-oriented (location-major) copy of expected counts | Space-time **Monte Carlo** only (the observed-data scan uses the original layout) | Tested scope only |
+| Temporal evaluation | Cached temporal-window bounds | Space-time Monte Carlo | Tested scope only |
+| Purely spatial Monte Carlo | Direct (non-virtual) measure-list updates when the minimum-measure list is used | Purely spatial Monte Carlo | Tested scope only |
 
-The case gate does **not** eliminate neighbor traversal. Its correctness argument has specific assumptions; see the project supplementary methods or implementation notes before applying it to other models.
+**Case-gate conditions** (checked automatically at run time; identical for the observed-data and Monte Carlo gates from v1.1.1): retrospective space-time analysis; discrete Poisson model; high-rate scanning only; one data set; no relative-risk threshold; standard temporal-window evaluation (no time-stratified adjustment); no inclusion of purely spatial or purely temporal clusters; non-negative expected-count contributions in every time period. If any condition fails, the gates and batching are disabled and all candidate windows are evaluated as in the original implementation.
+
+The case gates do **not** eliminate neighbor traversal. Their correctness argument relies on these assumptions; see the supplementary methods before applying them to other models.
+
+### Build configuration
+
+The case gates and batching are compile-time options:
+
+```
+STMC_CASE_GATE_MODE=2;STMC_MC_BATCH2;STMC_WINDOW_GATE
+```
+
+They are set only in the Visual Studio **Release|x64** configuration of `batch_application/SaTScan.vcxproj`. Other Visual Studio configurations, the shared library / GUI projects and the Linux `Makefile` build **without** the case gates and batching (the parallel and memory-layout changes are always compiled in). All modules must be compiled with the same set of options. Worker counts are fixed in the source code and can only be changed by recompiling.
+
+`STMC_CASE_GATE_MODE=1` builds a verification mode that runs the complete original evaluation and reports, in the `PROFILE_STMC_CASEGATE` line, whether any skipped evaluation would have changed a result (`probe_updates`).
 
 ### Evaluation scope
 
@@ -26,22 +51,27 @@ Research benchmarks covered purely spatial elliptic scanning (999 Monte Carlo re
 
 Verification examined the observed maximum log-likelihood ratio (LLR), reported cluster statistics, spatial membership, temporal intervals, and scanning-window geometry. In the elliptic space-time analyses, all 17 reference clusters were recovered with matching spatial membership and geometry. At 999 replications, the modified implementation reported one additional **non-significant** cluster; thus the complete reported cluster sets were not identical. Matching replication counts permits Monte Carlo comparisons but does not, by itself, establish identical p-values or randomization sequences.
 
-This configuration deployed 8 workers for circular neighbor construction, 8 for elliptic neighbor construction, and 24 for observed-data scanning. Circular and elliptic space-time Monte Carlo processing used a batch size of 8 simulated datasets per shared traversal. These settings describe the tested benchmarks, not universal defaults or guaranteed optimal configurations. Neighbor-construction workers, observed-scan workers, and Monte Carlo batch size control distinct stages of computation.
+The benchmarks used 8 workers for circular neighbor construction, 8 for elliptic neighbor construction, and 24 for observed-data scanning. Circular and elliptic space-time Monte Carlo processing used a batch size of 4 simulated datasets per shared traversal. These values are fixed in the source code; they describe the tested benchmarks, not tuned or guaranteed optimal settings for other hardware.
 
 ### Status and limitations
 
 - This is an experimental research fork derived from the original SaTScan source code, **not an official SaTScan release**. Independently verify results before operational or scientific use.
-- Computational agreement was evaluated for the stated discrete Poisson, high-rate configurations. These tests and the case-gate justification do not establish equivalence for all probability models, low-rate or simultaneous high/low scanning, or every cluster-reporting configuration.
+- Analyses outside the tested scope still run the modified parallel neighbor construction and parallel observed-data scan. Their results have not been compared with the original implementation.
+- The case-gate justification does not cover other probability models, low-rate or simultaneous high/low scanning, prospective analyses, or every cluster-reporting configuration.
 - The 17 elliptic space-time reference clusters were recovered, but one additional non-significant cluster was reported by the modified MC999 analysis; do not interpret the complete output sets as identical.
-- Runtimes and speedups depend on the hardware, input data, compiler/build settings, and scan parameters. Worker counts and batch size are benchmark-specific settings.
+- Runtimes and speedups depend on the hardware, input data, compiler/build settings, and scan parameters.
 - Build instructions below are preserved from the upstream documentation and may require adaptation for this fork.
+
+### Version history
+
+- **v1.1.1:** The observed-data case gate uses the same eligibility conditions as the Monte Carlo gate (adds: exact space-time analysis class, retrospective analysis, standard temporal-window evaluation, non-negative expected counts). Both gates are now restricted to retrospective space-time analyses. Outputs for configurations within the tested scope are unchanged. README and architecture notes corrected (Monte Carlo batch size is 4).
+- **v1.1.0:** Computational optimization research release.
 
 ### Documentation
 
 - [Architecture and optimization notes](architectural.md)
 - [Original SaTScan source code](https://github.com/scanstatistics/satscan)
 - [Official SaTScan website](https://www.satscan.org/)
-
 ---
 
 ## Original SaTScan documentation

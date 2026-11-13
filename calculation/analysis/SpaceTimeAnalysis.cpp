@@ -26,6 +26,62 @@
 
 #include <boost/thread.hpp>
 
+#include "TimeIntervalRange.h"
+
+namespace {
+
+/*
+ * Conditions shared by the observed-data and simulated-data case gates
+ * (v1.1.1: both gates use the same eligibility, matching the tested scope).
+ *
+ *   - retrospective space-time analysis
+ *   - discrete Poisson model
+ *   - HIGH-rate scan only
+ *   - no high-risk threshold
+ *   - one data set
+ */
+bool stmcCommonGateConditions(
+    const CParameters& parameters,
+    const CSaTScanData& dataHub)
+{
+    return parameters.GetAnalysisType() == SPACETIME &&
+           parameters.GetProbabilityModelType() == POISSON &&
+           parameters.GetExecuteScanRateType() == HIGH &&
+           !parameters.getRiskLimitHighClusters() &&
+           dataHub.GetDataSetHandler().GetNumDataSets() == 1;
+}
+
+/*
+ * Verify that cumulative measure data are non-increasing with increasing
+ * temporal index, M[i] >= M[i+1], and that the last period is non-negative.
+ * Because DataSet::setMeasureDataToCumulative() constructs
+ * M[i] = original[i] + M[i+1], this is equivalent to requiring non-negative
+ * expected-count contributions in every period.
+ */
+bool stmcExpectedCountsNonNegative(
+    measure_t** ppMeasure,
+    unsigned int nIntervals,
+    unsigned int nLocations)
+{
+    if (!ppMeasure || nIntervals == 0)
+        return false;
+
+    for (unsigned int loc = 0; loc < nLocations; ++loc) {
+
+        if (ppMeasure[nIntervals - 1][loc] < 0)
+            return false;
+
+        for (unsigned int i = 0; i + 1 < nIntervals; ++i) {
+            if (ppMeasure[i][loc] < ppMeasure[i + 1][loc])
+                return false;
+        }
+    }
+
+    return true;
+}
+
+}
+
 #if defined(STMC_CASE_GATE_MODE)
 
 namespace {
@@ -128,16 +184,7 @@ bool stmcCaseGateAllowed(
     CTimeIntervals& timeIntervals,
     CMeasureList& measureList)
 {
-    if (parameters.GetProbabilityModelType() != POISSON)
-        return false;
-
-    if (parameters.GetExecuteScanRateType() != HIGH)
-        return false;
-
-    if (parameters.getRiskLimitHighClusters())
-        return false;
-
-    if (dataHub.GetDataSetHandler().GetNumDataSets() != 1)
+    if (!stmcCommonGateConditions(parameters, dataHub))
         return false;
 
     if (typeid(clusterData) != typeid(SpaceTimeData))
@@ -150,19 +197,6 @@ bool stmcCaseGateAllowed(
         return false;
 
 
-    /*
-     * Verify that cumulative measure data are non-increasing with
-     * increasing temporal index:
-     *
-     *     M[i] >= M[i+1]
-     *
-     * Because DataSet::setMeasureDataToCumulative() constructs:
-     *
-     *     M[i] = original[i] + M[i+1]
-     *
-     * this is equivalent to requiring non-negative original
-     * contributions.
-     */
     measure_t ** ppMeasure = Interface.GetMeasureArray();
 
     if (!ppMeasure)
@@ -181,18 +215,7 @@ bool stmcCaseGateAllowed(
     if (nIntervals < 2)
         return false;
 
-    for (unsigned int loc = 0; loc < nLocations; ++loc) {
-
-        if (ppMeasure[nIntervals - 1][loc] < 0)
-            return false;
-
-        for (unsigned int i = 0; i + 1 < nIntervals; ++i) {
-            if (ppMeasure[i][loc] < ppMeasure[i + 1][loc])
-                return false;
-        }
-    }
-
-    return true;
+    return stmcExpectedCountsNonNegative(ppMeasure, nIntervals, nLocations);
 }
 
 }
@@ -383,13 +406,21 @@ void CSpaceTimeAnalysis::AllocateTopClustersObjects(const AbstractDataSetGateway
         _cluster_compare.reset(new CSpaceTimeCluster(_cluster_data_factory.get(), DataGateway));
 
         // Decide once per worker, not once per spatial expansion.
-        // Conservative eligibility for the observed zero-case fast path.
+        // v1.1.1: same eligibility as the simulated-data gate. Derived
+        // analyses (purely spatial / purely temporal cluster inclusion),
+        // prospective analyses and time-stratified evaluation are excluded.
+        const DataSetInterface& observedInterface =
+            DataGateway.GetDataSetInterface(0);
+
         const bool observedGateAllowed =
-            _parameters.GetProbabilityModelType() == POISSON &&
-            _parameters.GetExecuteScanRateType() == HIGH &&
-            !_parameters.getRiskLimitHighClusters() &&
-            _data_hub.GetDataSetHandler().GetNumDataSets() == 1 &&
-            typeid(*_cluster_compare->GetClusterData()) == typeid(SpaceTimeData);
+            typeid(*this) == typeid(CSpaceTimeAnalysis) &&
+            stmcCommonGateConditions(_parameters, _data_hub) &&
+            typeid(*_cluster_compare->GetClusterData()) == typeid(SpaceTimeData) &&
+            typeid(*_time_intervals) == typeid(TemporalDataEvaluator) &&
+            stmcExpectedCountsNonNegative(
+                observedInterface.GetMeasureArray(),
+                observedInterface.GetNumTimeIntervals(),
+                observedInterface.GetNumTracts());
 
         _cluster_compare->SetObservedZeroCaseGate(observedGateAllowed);
         //initialize list of top circle/ellipse clusters

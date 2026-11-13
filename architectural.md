@@ -1,37 +1,42 @@
 # Modifications in this research fork
 
-> This section documents the intended optimization design relative to the original SaTScan architecture. The original developer guide is preserved below.
+> This section documents the optimization design relative to the original SaTScan architecture. The original developer guide is preserved below.
 
 ## Computational flow
 
-1. **Input and setup:** Existing analysis-run and data-handling classes load parameters, observed data, and expected counts.
-2. **Neighbor construction:** Circular and elliptic neighbor sequences are built in parallel where supported; elliptic sequences use more contiguous storage to reduce allocation overhead.
-3. **Observed scan:** Candidate windows are evaluated in parallel using worker-local state. For eligible high-rate, single-dataset Poisson space-time configurations, a case gate avoids likelihood evaluation for expansions that add no cases while preserving neighbor traversal and expected-count updates.
-4. **Monte Carlo:** Temporal bounds are reused where possible. For tested circular and elliptic space-time paths, simulated datasets are processed in batches of up to eight with shared invariant traversal/expected-count work and simulation-specific case counts and likelihood evaluation.
-5. **Results:** Existing output and cluster-reporting infrastructure is retained, subject to verification of tie handling and reporting behavior.
+1. **Input and setup:** Existing analysis-run and data-handling classes load parameters, observed data, and expected counts. For Poisson space-time analyses, a location-major copy of the cumulative expected counts is also built; only the space-time Monte Carlo kernels read it.
+2. **Neighbor construction:** Circular and elliptic neighbor sequences are built in parallel (up to 8 workers, fixed in code); elliptic sequences are stored contiguously with an offset per scanning center.
+3. **Observed scan:** Scanning centers are distributed across 24 workers (fixed in code) for purely spatial and space-time analyses, each worker holding its own analysis state; results are inserted into the shared cluster collection under a mutex. Under the case-gate conditions, expansions that add no observed cases are not evaluated; neighbor traversal and expected-count accumulation are preserved.
+4. **Monte Carlo:** Temporal-window bounds are cached. Under the case-gate conditions: expansions adding no simulated cases are not evaluated, accumulation stops after the last neighbor containing cases, and for neighbors containing cases only the temporal windows whose case count changed are evaluated (window-level gate). Simulated datasets are processed in batches of 4 per spatial-neighbor traversal, sharing expected-count accumulation, with replication-specific case counts, window evaluations and maximum LLR.
+5. **Results:** Existing output and cluster-reporting infrastructure is retained.
+
+## Case-gate conditions
+
+From v1.1.1 the observed-data and Monte Carlo gates use the same run-time checks: retrospective space-time analysis (exactly `CSpaceTimeAnalysis`, i.e. no inclusion of purely spatial or purely temporal clusters); discrete Poisson model; high-rate scanning; one data set; no relative-risk threshold; standard `TemporalDataEvaluator` (no time-stratified adjustment); non-negative expected-count contributions in every period. The Monte Carlo gate additionally requires `SpaceTimeData`, `CMinMeasureList` and the location-major expected-count array. Batching requires all replications in a batch to be eligible and to share the same expected-count array; otherwise each replication is processed individually.
+
+Compile-time options (Visual Studio Release|x64 only): `STMC_CASE_GATE_MODE=2` (skip), `STMC_CASE_GATE_MODE=1` (verify: full evaluation with probes), `STMC_MC_BATCH2` (batching), `STMC_WINDOW_GATE` (window-level gate; requires `STMC_CASE_GATE_MODE`).
 
 ## Relationship to upstream components
 
 | Upstream component | Role | Modification area |
 | --- | --- | --- |
-| `CSaTScanData` / neighbor arrays | Neighbor construction and storage | Parallel neighbor generation; contiguous elliptic storage |
-| `CAnalysis` and spatial/space-time implementations | Observed scan and Monte Carlo orchestration | Parallel work; loop optimization; batching |
-| `CTimeIntervals` and temporal evaluators | Temporal candidate-window traversal | Reusable bounds; eligible case-gate evaluation |
-| `DataSet` / data access interfaces | Case and expected-count access | Location-oriented expected-count access in supported paths |
-| `CCluster` / result container | Cluster storage and reporting | Synchronization and correctness-sensitive result insertion |
-
-These mappings are architectural descriptions, not claims that every listed upstream class was directly edited. Use a source diff to document exact changed functions and files.
+| `CentroidNeighborCalculator` / neighbor arrays | Neighbor construction and storage | Parallel neighbor generation; contiguous elliptic storage |
+| `CSpaceTimeAnalysis`, `CPurelySpatialAnalysis` | Observed scan and Monte Carlo orchestration | Parallel observed scan; case-gate eligibility; batched simulation |
+| `SpaceTimeData`, `SpatialData` | Accumulation of cases and expected counts | Gated Monte Carlo kernels; batch kernel; direct measure-list calls |
+| `TemporalDataEvaluator` | Temporal candidate-window traversal | Cached window bounds; window-level gated evaluation |
+| `CSpaceTimeCluster` | Observed space-time candidate evaluation | Observed-data case gate |
+| `DataSet` / `PoissonModel` | Case and expected-count storage | Location-major expected-count copy |
+| `stsMCSimBatch4Functor`, `batch_subcontractor` | Monte Carlo job distribution | Groups of 4 replications per worker job |
 
 ## Correctness and applicability
 
-The case-gate argument applies only when an expansion adds no observed cases to any eligible time window and expected counts are nondecreasing. For the high-rate Poisson likelihood, increasing expected counts at fixed observed counts cannot increase a positive high-rate log-likelihood ratio. This does not justify applying the gate to low-rate or mixed high/low scans. The handling of ties, size restrictions, and secondary reported clusters must also be verified in the actual implementation.
+The case-gate argument: when an added location has no cases, every space-time cylinder of the expanded candidate has the same observed count as the corresponding cylinder of the preceding candidate and an expected count that is no smaller (non-negative contributions). For high-rate Poisson scanning the log-likelihood ratio does not increase with the expected count at a fixed observed count, so the expanded candidate cannot exceed the maximum already found. The window-level gate applies the same argument to individual temporal windows. Retained clusters are replaced only when the log-likelihood ratio is strictly greater, so skipped (dominated or tied) candidates do not change the retained cluster. This does not justify the gate for low-rate or mixed high/low scans or other probability models.
 
-Verification should distinguish (a) matching observed LLR, cluster membership, temporal intervals, geometry and descriptive statistics from (b) matching Monte Carlo-dependent p-values, which require matched simulation configurations.
+Verification should distinguish (a) matching observed LLR, cluster membership, temporal intervals, geometry and descriptive statistics from (b) matching Monte Carlo-dependent p-values, which can be checked by comparing the simulated LLR output files of both implementations.
 
 ## Benchmark configuration
 
-Integrated research benchmarks: eight workers for circular/elliptic neighbor construction; 24 workers for observed scanning; Monte Carlo batch size eight for tested circular and elliptic space-time paths. These values describe the reported experiments rather than universal recommended defaults.
-
+Integrated research benchmarks: 8 workers for circular/elliptic neighbor construction; 24 workers for observed scanning; Monte Carlo batch size 4 for circular and elliptic space-time paths. These values are fixed in the source code and describe the reported experiments rather than tuned defaults.
 ---
 
 # Original architectural guide (preserved)
