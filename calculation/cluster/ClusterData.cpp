@@ -12,6 +12,7 @@
 // Remove after the bottleneck investigation is complete.
 #include <atomic>
 #include <chrono>
+#include <memory>
 //**************** class SpatialData *******************************************
 
 /** class constructor */
@@ -576,21 +577,28 @@ double ProspectiveSpatialData::GetMaximizingValue(AbstractLikelihoodCalculator& 
 
 /** Overloaded assignement operator. */
 ProspectiveSpatialData & ProspectiveSpatialData::operator=(const ProspectiveSpatialData& rhs) {
+  if (this == &rhs) return *this;
+
+  // Allocate and copy before replacing the old buffers. This is safe even
+  // when the source and destination have different temporal allocation sizes.
+  std::unique_ptr<count_t[]> newCases;
+  std::unique_ptr<measure_t[]> newMeasure;
+  if (rhs.geEvaluationAssistDataStatus == Allocated) {
+    newCases.reset(new count_t[rhs.giAllocationSize]);
+    newMeasure.reset(new measure_t[rhs.giAllocationSize]);
+    memcpy(newCases.get(), rhs.gpCases, rhs.giAllocationSize * sizeof(count_t));
+    memcpy(newMeasure.get(), rhs.gpMeasure, rhs.giAllocationSize * sizeof(measure_t));
+  }
+
+  delete[] gpCases;
+  delete[] gpMeasure;
+  gpCases = newCases.release();
+  gpMeasure = newMeasure.release();
   gtCases = rhs.gtCases;
   gtMeasure = rhs.gtMeasure;
   giAllocationSize = rhs.giAllocationSize;
   giNumTimeIntervals = rhs.giNumTimeIntervals;
   giProspectiveStart = rhs.giProspectiveStart;
-  if (rhs.geEvaluationAssistDataStatus == Allocated) {
-    if (!gpCases) gpCases = new count_t[giAllocationSize];
-    if (!gpMeasure) gpMeasure = new measure_t[giAllocationSize];
-    memcpy(gpCases, rhs.gpCases, giAllocationSize * sizeof(count_t));
-    memcpy(gpMeasure, rhs.gpMeasure, giAllocationSize * sizeof(measure_t));
-  }
-  else {
-    delete[] gpCases; gpCases=0;
-    delete[] gpMeasure; gpMeasure=0;
-  }
   geEvaluationAssistDataStatus = rhs.geEvaluationAssistDataStatus;
   return *this;
 }
@@ -687,6 +695,67 @@ namespace {
     STMCKernelProfileReporter g_stmc_kernel_profile_reporter;
 }
 
+namespace {
+    inline unsigned long long stmcElapsedNs(
+        const STMCClock::time_point& a,
+        const STMCClock::time_point& b)
+    {
+        return static_cast<unsigned long long>(
+            std::chrono::duration_cast<std::chrono::nanoseconds>(b - a).count());
+    }
+
+#if defined(STMC_WINDOW_GATE)
+    /*
+     * Window-level gate helper.
+     *
+     * Adds one neighbour's reverse-cumulative case row to gpCases (same
+     * additions, same order as the ungated accumulation) and fills
+     *
+     *     lastCase[e] = largest interval i < e with ppCases[i][idx] !=
+     *                   ppCases[i+1][idx]   (the neighbour's own cases in i),
+     *                   or -1 if there is none,
+     *
+     * for e = 0..nIntervals. Row nIntervals is treated as zero, exactly as
+     * gpCases[nIntervals] is in the window computation. Using '!=' instead
+     * of '> 0' is conservative: any interval whose own count is non-zero
+     * marks every window containing it as changed.
+     *
+     * ppCases[i][idx] is read once per interval, as before.
+     */
+    inline void stmcAddCasesAndLastCase(
+        count_t* gpCases,
+        count_t* const* ppCases,
+        tract_t idx,
+        unsigned int startIndex,
+        unsigned int nIntervals,
+        int* lastCase)
+    {
+        for (unsigned int e = 0; e < startIndex && e <= nIntervals; ++e)
+            lastCase[e] = -1;
+
+        int last = -1;
+        count_t current =
+            (startIndex < nIntervals) ? ppCases[startIndex][idx] : 0;
+
+        for (unsigned int i = startIndex; i < nIntervals; ++i) {
+            const count_t next =
+                (i + 1 < nIntervals) ? ppCases[i + 1][idx] : 0;
+
+            gpCases[i] += current;
+            lastCase[i] = last;
+
+            if (current != next)
+                last = static_cast<int>(i);
+
+            current = next;
+        }
+
+        if (startIndex <= nIntervals)
+            lastCase[nIntervals] = last;
+    }
+#endif
+}
+
 //****************** class SpaceTimeData ***************************************
 
 /** Protected class constructor - accessible by derived classes only. */
@@ -778,6 +847,11 @@ void SpaceTimeData::AddNeighborDataAndCompareBatch(
     count_t** cases[MAX_BATCH_SIZE];
     const count_t* totals[MAX_BATCH_SIZE];
     tract_t last[MAX_BATCH_SIZE];
+#if defined(STMC_WINDOW_GATE)
+    int* lastCase[MAX_BATCH_SIZE];
+    unsigned long long windowTotalSum[MAX_BATCH_SIZE];
+    unsigned long long windowEvaluatedSum[MAX_BATCH_SIZE];
+#endif
 
     for (size_t r = 0; r < batchSize; ++r)
         last[r] = nNeighbors - 1;
@@ -799,6 +873,11 @@ void SpaceTimeData::AddNeighborDataAndCompareBatch(
 
         cases[r] = replica.dataInterface->GetCaseArray();
         totals[r] = cases[r][startIndex];
+#if defined(STMC_WINDOW_GATE)
+        lastCase[r] = replica.data->lastCaseBuffer();
+        windowTotalSum[r] = 0;
+        windowEvaluatedSum[r] = 0;
+#endif
 
         replica.data->InitializeData();
 
@@ -860,14 +939,35 @@ void SpaceTimeData::AddNeighborDataAndCompareBatch(
                 continue;
             }
 
+#if defined(STMC_WINDOW_GATE)
+            stmcAddCasesAndLastCase(
+                data.gpCases, cases[r], idx,
+                startIndex, nIntervals, lastCase[r]);
+#else
             for (unsigned int i = startIndex; i < nIntervals; ++i)
                 data.gpCases[i] += cases[r][i][idx];
+#endif
 
             data.AddNeighborDataSupplement(
                 idx,
                 *replica.dataInterface
             );
 
+#if defined(STMC_WINDOW_GATE)
+            // Exact types are guaranteed by stmcCaseGateAllowed().
+            unsigned long long windowTotal = 0;
+            windowEvaluatedSum[r] +=
+                static_cast<TemporalDataEvaluator&>(
+                    *replica.intervals
+                ).CompareMeasuresWindowGated(
+                    data,
+                    static_cast<CMinMeasureList&>(*replica.measures),
+                    sharedData.gpMeasure,
+                    lastCase[r],
+                    windowTotal
+                );
+            windowTotalSum[r] += windowTotal;
+#else
             static_cast<TemporalDataEvaluator&>(
                 *replica.intervals
             ).CompareMeasuresShared(
@@ -875,10 +975,18 @@ void SpaceTimeData::AddNeighborDataAndCompareBatch(
                 *replica.measures,
                 sharedData.gpMeasure
             );
+#endif
 
             ++data._gate_stats.compare_calls;
         }
     }
+
+#if defined(STMC_WINDOW_GATE)
+    for (size_t r = 0; r < batchSize; ++r) {
+        replicas[r].data->_gate_stats.window_total += windowTotalSum[r];
+        replicas[r].data->_gate_stats.window_evaluated += windowEvaluatedSum[r];
+    }
+#endif
 }
 void SpaceTimeData::AddNeighborDataAndCompareBatch2(
     SpaceTimeData& dataA,
@@ -1105,9 +1213,19 @@ void SpaceTimeData::AddNeighborDataAndCompare(const CentroidNeighbors& CentroidD
     // Execute the complete original algorithm. For expansions that the
     // optimized version would skip, probe CMinMeasureList to determine
     // whether CompareMeasures() actually improves any retained minimum.
+    //
+    // With STMC_WINDOW_GATE, case-bearing expansions additionally probe the
+    // individual temporal windows that the window-level gate would skip.
+    // probe_updates == 0 means the gated build is bit-identical.
 
     CMinMeasureList * pMinMeasureList =
         dynamic_cast<CMinMeasureList *>(&MeasureList);
+
+#if defined(STMC_WINDOW_GATE)
+    int * pLastCase = lastCaseBuffer();
+    TemporalDataEvaluator * pGateEvaluator =
+        dynamic_cast<TemporalDataEvaluator *>(&TimeIntervals);
+#endif
 
     for (t = 0; t < tNumNeighbors; ++t) {
 
@@ -1124,76 +1242,72 @@ void SpaceTimeData::AddNeighborDataAndCompare(const CentroidNeighbors& CentroidD
       if (zeroCase)
         ++_gate_stats.zero_case_expansions;
 
+#if defined(STMC_WINDOW_GATE)
+      const bool windowProbe =
+          !zeroCase && pMinMeasureList && pGateEvaluator;
+#else
+      const bool windowProbe = false;
+#endif
+
       const bool doProfile =
           ((static_cast<unsigned long long>(t) &
             (STMC_SAMPLE_STRIDE - 1ULL)) == 0ULL);
 
-      if (doProfile) {
+      STMCClock::time_point t0, t1, t2, t3;
 
-        const STMCClock::time_point t0 = STMCClock::now();
+      if (doProfile)
+        t0 = STMCClock::now();
 
-        for (i = _start_index; i < iIntervals; ++i) {
-          gpCases[i] += ppCases[i][tNeighborIndex];
+      if (windowProbe) {
+#if defined(STMC_WINDOW_GATE)
+        for (i = _start_index; i < iIntervals; ++i)
           gpMeasure[i] += ppMeasure[i][tNeighborIndex];
-        }
 
-        const STMCClock::time_point t1 = STMCClock::now();
-
-        AddNeighborDataSupplement(tNeighborIndex, Interface);
-
-        const STMCClock::time_point t2 = STMCClock::now();
-
-        if (zeroCase && pMinMeasureList)
-          pMinMeasureList->BeginGateProbe();
-
-        TimeIntervals.CompareMeasures(*this, MeasureList);
-        ++_gate_stats.compare_calls;
-
-        if (zeroCase && pMinMeasureList)
-          pMinMeasureList->EndGateProbe();
-
-        const STMCClock::time_point t3 = STMCClock::now();
-
-        profileAccumNs +=
-            static_cast<unsigned long long>(
-                std::chrono::duration_cast<std::chrono::nanoseconds>(
-                    t1 - t0
-                ).count()
-            );
-
-        profileSuppNs +=
-            static_cast<unsigned long long>(
-                std::chrono::duration_cast<std::chrono::nanoseconds>(
-                    t2 - t1
-                ).count()
-            );
-
-        profileCompareNs +=
-            static_cast<unsigned long long>(
-                std::chrono::duration_cast<std::chrono::nanoseconds>(
-                    t3 - t2
-                ).count()
-            );
-
-        ++profileSamples;
-
+        stmcAddCasesAndLastCase(
+            gpCases, ppCases, tNeighborIndex,
+            _start_index, iIntervals, pLastCase);
+#endif
       } else {
-
         for (i = _start_index; i < iIntervals; ++i) {
           gpCases[i] += ppCases[i][tNeighborIndex];
           gpMeasure[i] += ppMeasure[i][tNeighborIndex];
         }
+      }
 
-        AddNeighborDataSupplement(tNeighborIndex, Interface);
+      if (doProfile)
+        t1 = STMCClock::now();
 
+      AddNeighborDataSupplement(tNeighborIndex, Interface);
+
+      if (doProfile)
+        t2 = STMCClock::now();
+
+      if (windowProbe) {
+#if defined(STMC_WINDOW_GATE)
+        unsigned long long windowTotal = 0;
+        _gate_stats.window_evaluated +=
+            pGateEvaluator->CompareMeasuresWindowProbe(
+                *this, *pMinMeasureList, pLastCase, windowTotal);
+        _gate_stats.window_total += windowTotal;
+#endif
+      } else {
         if (zeroCase && pMinMeasureList)
           pMinMeasureList->BeginGateProbe();
 
         TimeIntervals.CompareMeasures(*this, MeasureList);
-        ++_gate_stats.compare_calls;
 
         if (zeroCase && pMinMeasureList)
           pMinMeasureList->EndGateProbe();
+      }
+
+      ++_gate_stats.compare_calls;
+
+      if (doProfile) {
+        t3 = STMCClock::now();
+        profileAccumNs   += stmcElapsedNs(t0, t1);
+        profileSuppNs    += stmcElapsedNs(t1, t2);
+        profileCompareNs += stmcElapsedNs(t2, t3);
+        ++profileSamples;
       }
     }
 
@@ -1208,6 +1322,24 @@ void SpaceTimeData::AddNeighborDataAndCompare(const CentroidNeighbors& CentroidD
     //
     // After the last case-bearing neighbor, nothing further needs to be
     // accumulated because every remaining expansion is dominated.
+    //
+    // With STMC_WINDOW_GATE, a case-bearing expansion evaluates only the
+    // temporal windows whose case count changed with that neighbour; every
+    // other window is dominated by the same window at an earlier expansion
+    // (same cases, measure not smaller). See CompareMeasuresWindowGated().
+
+#if defined(STMC_WINDOW_GATE)
+    int * pLastCase = lastCaseBuffer();
+
+    // Exact types are guaranteed by stmcCaseGateAllowed().
+    TemporalDataEvaluator & gateEvaluator =
+        static_cast<TemporalDataEvaluator &>(TimeIntervals);
+    CMinMeasureList & gateMeasures =
+        static_cast<CMinMeasureList &>(MeasureList);
+
+    unsigned long long windowTotalSum = 0;
+    unsigned long long windowEvaluatedSum = 0;
+#endif
 
     for (t = 0; t <= tLast; ++t) {
 
@@ -1226,10 +1358,10 @@ void SpaceTimeData::AddNeighborDataAndCompare(const CentroidNeighbors& CentroidD
 			const bool zeroCase =
 				(pTotalRow[tNeighborIndex] == 0);
       #endif
-		  
-	  const measure_t * pMeasureRow =
-		pMeasureLocationMajor +
-		static_cast<size_t>(tNeighborIndex) * iIntervals;
+
+      const measure_t * pMeasureRow =
+          pMeasureLocationMajor +
+          static_cast<size_t>(tNeighborIndex) * iIntervals;
 
       if (zeroCase)
         ++_gate_stats.zero_case_expansions;
@@ -1238,77 +1370,66 @@ void SpaceTimeData::AddNeighborDataAndCompare(const CentroidNeighbors& CentroidD
           ((static_cast<unsigned long long>(t) &
             (STMC_SAMPLE_STRIDE - 1ULL)) == 0ULL);
 
-      if (doProfile) {
+      STMCClock::time_point t0, t1, t2, t3;
 
-        const STMCClock::time_point t0 = STMCClock::now();
+      if (doProfile)
+        t0 = STMCClock::now();
 
-        if (zeroCase) {
-          // Cases remain unchanged; only measure must be carried forward.
-          for (i = _start_index; i < iIntervals; ++i)
-            gpMeasure[i] += pMeasureRow[i];
-        } else {
-          for (i = _start_index; i < iIntervals; ++i) {
-            gpCases[i] += ppCases[i][tNeighborIndex];
-            gpMeasure[i] += pMeasureRow[i];
-          }
-        }
-
-        const STMCClock::time_point t1 = STMCClock::now();
-
-        if (!zeroCase)
-          AddNeighborDataSupplement(tNeighborIndex, Interface);
-
-        const STMCClock::time_point t2 = STMCClock::now();
-
-        if (!zeroCase) {
-          TimeIntervals.CompareMeasures(*this, MeasureList);
-          ++_gate_stats.compare_calls;
-        }
-
-        const STMCClock::time_point t3 = STMCClock::now();
-
-        profileAccumNs +=
-            static_cast<unsigned long long>(
-                std::chrono::duration_cast<std::chrono::nanoseconds>(
-                    t1 - t0
-                ).count()
-            );
-
-        profileSuppNs +=
-            static_cast<unsigned long long>(
-                std::chrono::duration_cast<std::chrono::nanoseconds>(
-                    t2 - t1
-                ).count()
-            );
-
-        profileCompareNs +=
-            static_cast<unsigned long long>(
-                std::chrono::duration_cast<std::chrono::nanoseconds>(
-                    t3 - t2
-                ).count()
-            );
-
-        ++profileSamples;
-
+      if (zeroCase) {
+        // Cases remain unchanged; only measure must be carried forward.
+        for (i = _start_index; i < iIntervals; ++i)
+          gpMeasure[i] += pMeasureRow[i];
       } else {
+#if defined(STMC_WINDOW_GATE)
+        for (i = _start_index; i < iIntervals; ++i)
+          gpMeasure[i] += pMeasureRow[i];
 
-        if (zeroCase) {
-          for (i = _start_index; i < iIntervals; ++i)
-            gpMeasure[i] += pMeasureRow[i];
-
-        } else {
-
-          for (i = _start_index; i < iIntervals; ++i) {
-            gpCases[i] += ppCases[i][tNeighborIndex];
-            gpMeasure[i] += pMeasureRow[i];
-          }
-
-          AddNeighborDataSupplement(tNeighborIndex, Interface);
-          TimeIntervals.CompareMeasures(*this, MeasureList);
-          ++_gate_stats.compare_calls;
+        stmcAddCasesAndLastCase(
+            gpCases, ppCases, tNeighborIndex,
+            _start_index, iIntervals, pLastCase);
+#else
+        for (i = _start_index; i < iIntervals; ++i) {
+          gpCases[i] += ppCases[i][tNeighborIndex];
+          gpMeasure[i] += pMeasureRow[i];
         }
+#endif
+      }
+
+      if (doProfile)
+        t1 = STMCClock::now();
+
+      if (!zeroCase)
+        AddNeighborDataSupplement(tNeighborIndex, Interface);
+
+      if (doProfile)
+        t2 = STMCClock::now();
+
+      if (!zeroCase) {
+#if defined(STMC_WINDOW_GATE)
+        unsigned long long windowTotal = 0;
+        windowEvaluatedSum +=
+            gateEvaluator.CompareMeasuresWindowGated(
+                *this, gateMeasures, gpMeasure, pLastCase, windowTotal);
+        windowTotalSum += windowTotal;
+#else
+        TimeIntervals.CompareMeasures(*this, MeasureList);
+#endif
+        ++_gate_stats.compare_calls;
+      }
+
+      if (doProfile) {
+        t3 = STMCClock::now();
+        profileAccumNs   += stmcElapsedNs(t0, t1);
+        profileSuppNs    += stmcElapsedNs(t1, t2);
+        profileCompareNs += stmcElapsedNs(t2, t3);
+        ++profileSamples;
       }
     }
+
+#if defined(STMC_WINDOW_GATE)
+    _gate_stats.window_total += windowTotalSum;
+    _gate_stats.window_evaluated += windowEvaluatedSum;
+#endif
 
 #endif
 
@@ -1442,19 +1563,27 @@ void SpaceTimeData::DeallocateEvaluationAssistClassMembers() {
 
 /** overloaded assignement operator */
 SpaceTimeData & SpaceTimeData::operator=(const SpaceTimeData& rhs) {
+    if (this == &rhs) return *this;
+
+    // Never reuse buffers of unknown capacity: the source may have a
+    // different number of time intervals than this destination.
+    std::unique_ptr<count_t[]> newCases;
+    std::unique_ptr<measure_t[]> newMeasure;
+    if (rhs.geEvaluationAssistDataStatus == Allocated) {
+        newCases.reset(new count_t[rhs.giAllocationSize]);
+        newMeasure.reset(new measure_t[rhs.giAllocationSize]);
+        memcpy(newCases.get(), rhs.gpCases, rhs.giAllocationSize * sizeof(count_t));
+        memcpy(newMeasure.get(), rhs.gpMeasure, rhs.giAllocationSize * sizeof(measure_t));
+    }
+
+    delete[] gpCases;
+    delete[] gpMeasure;
+    gpCases = newCases.release();
+    gpMeasure = newMeasure.release();
     gtCases = rhs.gtCases;
     gtMeasure = rhs.gtMeasure;
     giAllocationSize = rhs.giAllocationSize;
     _start_index = rhs._start_index;
-    if (rhs.geEvaluationAssistDataStatus == Allocated) {
-        if(!gpCases) gpCases = new count_t[rhs.giAllocationSize];
-        if (!gpMeasure) gpMeasure = new measure_t[rhs.giAllocationSize];
-        memcpy(gpCases, rhs.gpCases, giAllocationSize * sizeof(count_t));
-        memcpy(gpMeasure, rhs.gpMeasure, giAllocationSize * sizeof(measure_t));
-    } else {
-        delete[] gpCases; gpCases=0;
-        delete[] gpMeasure; gpMeasure=0;
-    }
     geEvaluationAssistDataStatus = rhs.geEvaluationAssistDataStatus;
     return *this;
 }

@@ -11,12 +11,14 @@
 class CSpaceTimeCluster : public CCluster {
   protected:
     AbstractTemporalClusterData         * gpClusterData;
+    bool                                  _observed_zero_case_gate;
 
   public:
     CSpaceTimeCluster(const AbstractClusterDataFactory * pClusterFactory, const AbstractDataSetGateway & DataGateway);
     CSpaceTimeCluster(const CSpaceTimeCluster& rhs);
     virtual ~CSpaceTimeCluster();
 
+    void                                  SetObservedZeroCaseGate(bool enabled) { _observed_zero_case_gate = enabled; }
     virtual CSpaceTimeCluster           * Clone() const;
     CSpaceTimeCluster                   & operator =(const CSpaceTimeCluster& cluster);
 

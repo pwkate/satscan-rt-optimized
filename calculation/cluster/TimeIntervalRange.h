@@ -11,6 +11,7 @@
 class CSaTScanData; /** forward class declaration */
 class CCluster; /** forward class declaration */
 class AbstractTemporalClusterData; /** forward class declaration */
+class CMinMeasureList; /** forward class declaration */
 
 /** Temporal window evaluator. */
 class TemporalDataEvaluator : public CTimeIntervals {
@@ -37,6 +38,9 @@ class TemporalDataEvaluator : public CTimeIntervals {
 
         bool _measure_window_cache_valid;
 
+        // Total number of temporal windows in the cached bounds.
+        unsigned long long _measure_window_total;
+
         void BuildMeasureWindowCache();
 
     public:
@@ -58,6 +62,44 @@ class TemporalDataEvaluator : public CTimeIntervals {
             CMeasureList& MeasureList,
             const measure_t* sharedMeasure
         );
+#endif
+
+#if defined(STMC_WINDOW_GATE) && defined(STMC_CASE_GATE_MODE)
+        /*
+         * Window-level case gate (exact; HIGH-rate CMinMeasureList only).
+         *
+         * pLastCase[e] is the largest interval i < e in which the neighbour
+         * just added has its own (non-cumulative) cases, or -1 if none.
+         * Window [s, e) changed its case count with that neighbour iff
+         * s <= pLastCase[e]. Every other window has the same case count as
+         * at the previous expansion and a measure that is not smaller, so it
+         * cannot lower any CMinMeasureList minimum; it is not offered.
+         *
+         * Returns the number of windows evaluated; totalWindows receives the
+         * number the ungated CompareMeasures() would evaluate.
+         */
+        unsigned long long CompareMeasuresWindowGated(
+            AbstractTemporalClusterData& ClusterData,
+            CMinMeasureList& MeasureList,
+            const measure_t* pMeasure,
+            const int* pLastCase,
+            unsigned long long& totalWindows
+        );
+
+  #if STMC_CASE_GATE_MODE == 1
+        /*
+         * VERIFY mode: evaluates every window (original result) but routes
+         * the windows the gate would skip through the CMinMeasureList gate
+         * probe. probe_updates == 0 proves the gated kernel is bit-identical.
+         * Returns the number of windows the gate would evaluate.
+         */
+        unsigned long long CompareMeasuresWindowProbe(
+            AbstractTemporalClusterData& ClusterData,
+            CMinMeasureList& MeasureList,
+            const int* pLastCase,
+            unsigned long long& totalWindows
+        );
+  #endif
 #endif
 
         virtual void CompareClusterSet(

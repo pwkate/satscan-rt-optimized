@@ -11,6 +11,8 @@
 
 #include <cstdint>
 #include <vector>
+#include <exception>
+#include <typeinfo>
 
 #if defined(STMC_CASE_GATE_MODE)
 #include "TimeIntervalRange.h"
@@ -37,6 +39,8 @@ struct StmcCaseGateReport {
     unsigned long long zero_case_expansions;
     unsigned long long tail_zero_case_expansions;
     unsigned long long compare_calls;
+    unsigned long long window_total;
+    unsigned long long window_evaluated;
 
 #if STMC_CASE_GATE_MODE == 1
     unsigned long long probe_updates;
@@ -49,7 +53,9 @@ struct StmcCaseGateReport {
           expansions(0),
           zero_case_expansions(0),
           tail_zero_case_expansions(0),
-          compare_calls(0)
+          compare_calls(0),
+          window_total(0),
+          window_evaluated(0)
 #if STMC_CASE_GATE_MODE == 1
           , probe_updates(0),
           probe_max_rel(0.0)
@@ -62,7 +68,8 @@ struct StmcCaseGateReport {
             "PROFILE_STMC_CASEGATE "
             "mode=%d reps=%llu gate_enabled_reps=%llu "
             "expansions=%llu zero_case=%llu tail_zero_case=%llu "
-            "compare_calls=%llu"
+            "compare_calls=%llu window_gate=%d "
+            "window_total=%llu window_evaluated=%llu window_skipped_pct=%.2f"
 #if STMC_CASE_GATE_MODE == 1
             " probe_updates=%llu probe_max_rel=%.17g"
 #endif
@@ -73,7 +80,18 @@ struct StmcCaseGateReport {
             expansions,
             zero_case_expansions,
             tail_zero_case_expansions,
-            compare_calls
+            compare_calls,
+#if defined(STMC_WINDOW_GATE)
+            1,
+#else
+            0,
+#endif
+            window_total,
+            window_evaluated,
+            window_total
+                ? 100.0 * static_cast<double>(window_total - window_evaluated) /
+                  static_cast<double>(window_total)
+                : 0.0
 #if STMC_CASE_GATE_MODE == 1
             , probe_updates,
             probe_max_rel
@@ -150,6 +168,10 @@ bool stmcCaseGateAllowed(
     if (!ppMeasure)
         return false;
 
+    // Mode 2 and the batch kernels read the location-major copy directly.
+    if (!Interface.GetMeasureArray_LocationMajor())
+        return false;
+
 	const unsigned int nIntervals =
 		Interface.GetNumTimeIntervals();
 
@@ -185,6 +207,13 @@ void CSpaceTimeAnalysis::FindTopClusters(
     const AbstractDataSetGateway& DataGateway,
     MLC_Collections_t& TopClustersContainers) {
 
+    // Derived space-time analysis classes can override CalculateTopClusters().
+    // Do not replace their specialized evaluation with a base-class worker.
+    if (typeid(*this) != typeid(CSpaceTimeAnalysis)) {
+        CAnalysis::FindTopClusters(DataGateway, TopClustersContainers);
+        return;
+    }
+
     const unsigned int nWorkers = 24;
 
     boost::posix_time::ptime StartTime =
@@ -198,10 +227,13 @@ void CSpaceTimeAnalysis::FindTopClusters(
 
     boost::thread_group workers;
     boost::mutex addMutex;
+    boost::mutex errorMutex;
+    std::exception_ptr workerError;
 
     for (unsigned int worker = 0; worker < nWorkers; ++worker) {
 
         workers.create_thread([&, worker]() {
+            try {
 
             /*
              * Give each worker its own gateway.
@@ -296,10 +328,17 @@ void CSpaceTimeAnalysis::FindTopClusters(
                     }
                 }
             }
+            } catch (...) {
+                boost::mutex::scoped_lock lock(errorMutex);
+                if (!workerError)
+                    workerError = std::current_exception();
+            }
         });
     }
 
     workers.join_all();
+    if (workerError)
+        std::rethrow_exception(workerError);
 
     double elapsed =
         (::GetCurrentTime_HighResolution() - StartTime)
@@ -342,6 +381,17 @@ void CSpaceTimeAnalysis::AllocateTopClustersObjects(const AbstractDataSetGateway
         ));
         //create cluster object used as comparator when iterating over centroids and time intervals
         _cluster_compare.reset(new CSpaceTimeCluster(_cluster_data_factory.get(), DataGateway));
+
+        // Decide once per worker, not once per spatial expansion.
+        // Conservative eligibility for the observed zero-case fast path.
+        const bool observedGateAllowed =
+            _parameters.GetProbabilityModelType() == POISSON &&
+            _parameters.GetExecuteScanRateType() == HIGH &&
+            !_parameters.getRiskLimitHighClusters() &&
+            _data_hub.GetDataSetHandler().GetNumDataSets() == 1 &&
+            typeid(*_cluster_compare->GetClusterData()) == typeid(SpaceTimeData);
+
+        _cluster_compare->SetObservedZeroCaseGate(observedGateAllowed);
         //initialize list of top circle/ellipse clusters
         _top_clusters.setTopClusters(*_cluster_compare);
     } catch (prg_exception& x) {
@@ -521,6 +571,12 @@ double CSpaceTimeAnalysis::MonteCarlo(const DataSetInterface& Interface) {
         g_stmc_case_gate_report.compare_calls +=
             stats.compare_calls;
 
+        g_stmc_case_gate_report.window_total +=
+            stats.window_total;
+
+        g_stmc_case_gate_report.window_evaluated +=
+            stats.window_evaluated;
+
 #if STMC_CASE_GATE_MODE == 1
         if (pMinMeasureList) {
             g_stmc_case_gate_report.probe_updates +=
@@ -682,6 +738,8 @@ void CSpaceTimeAnalysis::ExecuteSimulationBatch(
     unsigned long long zeroCase = 0;
     unsigned long long tailZeroCase = 0;
     unsigned long long compareCalls = 0;
+    unsigned long long windowTotal = 0;
+    unsigned long long windowEvaluated = 0;
 
     for (size_t r = 0; r < batchSize; ++r) {
 
@@ -695,6 +753,8 @@ void CSpaceTimeAnalysis::ExecuteSimulationBatch(
         zeroCase += stats.zero_case_expansions;
         tailZeroCase += stats.tail_zero_case_expansions;
         compareCalls += stats.compare_calls;
+        windowTotal += stats.window_total;
+        windowEvaluated += stats.window_evaluated;
     }
 
     {
@@ -708,6 +768,8 @@ void CSpaceTimeAnalysis::ExecuteSimulationBatch(
         g_stmc_case_gate_report.zero_case_expansions += zeroCase;
         g_stmc_case_gate_report.tail_zero_case_expansions += tailZeroCase;
         g_stmc_case_gate_report.compare_calls += compareCalls;
+        g_stmc_case_gate_report.window_total += windowTotal;
+        g_stmc_case_gate_report.window_evaluated += windowEvaluated;
     }
 }
 
@@ -838,6 +900,12 @@ void CSpaceTimeAnalysis::ExecuteSimulationBatch2(
 
         g_stmc_case_gate_report.compare_calls +=
             statsA.compare_calls + statsB.compare_calls;
+
+        g_stmc_case_gate_report.window_total +=
+            statsA.window_total + statsB.window_total;
+
+        g_stmc_case_gate_report.window_evaluated +=
+            statsA.window_evaluated + statsB.window_evaluated;
     }
 	
 }

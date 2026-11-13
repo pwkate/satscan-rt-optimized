@@ -12,7 +12,7 @@ namespace {
 
 /** constructor */
 CSpaceTimeCluster::CSpaceTimeCluster(const AbstractClusterDataFactory * pClusterFactory, const AbstractDataSetGateway & DataGateway)
-:CCluster(), gpClusterData(0){
+:CCluster(), gpClusterData(0), _observed_zero_case_gate(false){
     try {
         gpClusterData = pClusterFactory->GetNewSpaceTimeClusterData(DataGateway);
     } catch (prg_exception& x) {
@@ -23,7 +23,7 @@ CSpaceTimeCluster::CSpaceTimeCluster(const AbstractClusterDataFactory * pCluster
 }
 
 /** copy constructor */
-CSpaceTimeCluster::CSpaceTimeCluster(const CSpaceTimeCluster& rhs) : gpClusterData(0) /* : CCluster()*/ {
+CSpaceTimeCluster::CSpaceTimeCluster(const CSpaceTimeCluster& rhs) : gpClusterData(0), _observed_zero_case_gate(rhs._observed_zero_case_gate) /* : CCluster()*/ {
     try {
         m_Center = rhs.m_Center;
         _central_identifier = rhs._central_identifier;
@@ -52,6 +52,7 @@ CSpaceTimeCluster::~CSpaceTimeCluster() {
 
 /** overloaded assignment operator */
 CSpaceTimeCluster& CSpaceTimeCluster::operator=(const CSpaceTimeCluster& rhs) {
+    _observed_zero_case_gate       = rhs._observed_zero_case_gate;
     m_Center                      = rhs.m_Center;
     _central_identifier           = rhs._central_identifier;
     _num_identifiers              = rhs._num_identifiers;
@@ -73,6 +74,7 @@ CSpaceTimeCluster * CSpaceTimeCluster::Clone() const {
 }
 
 void CSpaceTimeCluster::CopyEssentialClassMembers(const CCluster& rhs) {
+    _observed_zero_case_gate       = ((const CSpaceTimeCluster&)rhs)._observed_zero_case_gate;
     m_Center                      = ((const CSpaceTimeCluster&)rhs).m_Center;
     _central_identifier           = ((const CSpaceTimeCluster&)rhs)._central_identifier;
     _num_identifiers              = ((const CSpaceTimeCluster&)rhs)._num_identifiers;
@@ -191,10 +193,14 @@ void CSpaceTimeCluster::CalculateTopClusterAboutCentroidDefinition(
 			DataGateway
 		);
 
-		// MODE 2: zero-case observed-scan gate.
-		// Preserve traversal, neighbor count, and accumulated data,
-		// but skip temporal evaluation when this neighbor adds no cases.
-		if (pTotalRow[tNeighborIndex] == 0)
+		// Observed zero-case gate (Poisson, HIGH rate, one dataset, no risk
+		// limit; eligibility decided in AllocateTopClustersObjects()).
+		// A neighbour with zero cases over the whole study period adds no
+		// cases to any temporal window, so no window can gain a higher LLR
+		// than at the previous expansion. Keep traversal, neighbour count
+		// and accumulated data; skip only the temporal evaluation.
+		// When the gate is not allowed, every expansion is evaluated.
+		if (_observed_zero_case_gate && pTotalRow[tNeighborIndex] == 0)
 			continue;
 
 		TimeIntervals.CompareClusterSet(*this, clusterSet);

@@ -31,7 +31,8 @@ TemporalDataEvaluator::TemporalDataEvaluator(
     ExecutionType eExecutionType
 )
 : CTimeIntervals(DataHub, Calculator, eIncludeClustersType),
-  _measure_window_cache_valid(false)
+  _measure_window_cache_valid(false),
+  _measure_window_total(0)
 {
     if (eExecutionType == CENTRICALLY) {
         gpCalculationMethod =
@@ -75,6 +76,7 @@ void TemporalDataEvaluator::CompareClusterSet(CCluster& Running, CClusterSet& cl
 void TemporalDataEvaluator::BuildMeasureWindowCache() {
 
     _measure_window_bounds.clear();
+    _measure_window_total = 0;
 
     gpMaxWindowLengthIndicator->reset();
 
@@ -111,6 +113,8 @@ void TemporalDataEvaluator::BuildMeasureWindowCache() {
             bounds.stop  = iMaxStartWindow;
 
             _measure_window_bounds.push_back(bounds);
+            _measure_window_total +=
+                static_cast<unsigned long long>(iMaxStartWindow - iWindowStart);
         }
     }
 
@@ -214,6 +218,131 @@ void TemporalDataEvaluator::CompareMeasuresShared(
     }
 }
 #endif
+
+#if defined(STMC_WINDOW_GATE) && defined(STMC_CASE_GATE_MODE)
+
+unsigned long long TemporalDataEvaluator::CompareMeasuresWindowGated(
+    AbstractTemporalClusterData& ClusterData,
+    CMinMeasureList& MeasureList,
+    const measure_t* pMeasure,
+    const int* pLastCase,
+    unsigned long long& totalWindows)
+{
+    TemporalData& Data = (TemporalData&)ClusterData;
+    const count_t* pCases = Data.gpCases;
+
+    if (!_measure_window_cache_valid ||
+        _cache_start_start != STARTRANGE_STARTDATE ||
+        _cache_start_end   != STARTRANGE_ENDDATE ||
+        _cache_end_start   != ENDRANGE_STARTDATE ||
+        _cache_end_end     != ENDRANGE_ENDDATE) {
+        BuildMeasureWindowCache();
+    }
+
+    totalWindows = _measure_window_total;
+    unsigned long long evaluated = 0;
+
+    for (std::vector<MeasureWindowBounds>::const_iterator it =
+             _measure_window_bounds.begin();
+         it != _measure_window_bounds.end();
+         ++it) {
+
+        const int iWindowEnd = it->end;
+
+        // Starts beyond pLastCase[e] give windows whose case count did not
+        // change with this neighbour.
+        int iStop = pLastCase[iWindowEnd] + 1;
+        if (iStop > it->stop)
+            iStop = it->stop;
+
+        if (iStop <= it->start)
+            continue;
+
+        const count_t endCases = pCases[iWindowEnd];
+        const measure_t endMeasure = pMeasure[iWindowEnd];
+
+        evaluated += static_cast<unsigned long long>(iStop - it->start);
+
+        // Exact type is guaranteed by the gate eligibility check;
+        // the qualified call avoids virtual dispatch.
+        for (int iWindowStart = it->start;
+             iWindowStart < iStop;
+             ++iWindowStart) {
+            MeasureList.CMinMeasureList::AddMeasure(
+                pCases[iWindowStart] - endCases,
+                pMeasure[iWindowStart] - endMeasure
+            );
+        }
+    }
+
+    return evaluated;
+}
+
+  #if STMC_CASE_GATE_MODE == 1
+
+unsigned long long TemporalDataEvaluator::CompareMeasuresWindowProbe(
+    AbstractTemporalClusterData& ClusterData,
+    CMinMeasureList& MeasureList,
+    const int* pLastCase,
+    unsigned long long& totalWindows)
+{
+    TemporalData& Data = (TemporalData&)ClusterData;
+    const count_t* pCases = Data.gpCases;
+    const measure_t* pMeasure = Data.gpMeasure;
+
+    if (!_measure_window_cache_valid ||
+        _cache_start_start != STARTRANGE_STARTDATE ||
+        _cache_start_end   != STARTRANGE_ENDDATE ||
+        _cache_end_start   != ENDRANGE_STARTDATE ||
+        _cache_end_end     != ENDRANGE_ENDDATE) {
+        BuildMeasureWindowCache();
+    }
+
+    totalWindows = _measure_window_total;
+    unsigned long long wouldEvaluate = 0;
+
+    for (std::vector<MeasureWindowBounds>::const_iterator it =
+             _measure_window_bounds.begin();
+         it != _measure_window_bounds.end();
+         ++it) {
+
+        const int iWindowEnd = it->end;
+        const count_t endCases = pCases[iWindowEnd];
+        const measure_t endMeasure = pMeasure[iWindowEnd];
+
+        int iGateStop = pLastCase[iWindowEnd] + 1;
+        if (iGateStop > it->stop)
+            iGateStop = it->stop;
+        if (iGateStop > it->start)
+            wouldEvaluate +=
+                static_cast<unsigned long long>(iGateStop - it->start);
+
+        // Full original evaluation; windows the gate would skip are probed.
+        for (int iWindowStart = it->start;
+             iWindowStart < it->stop;
+             ++iWindowStart) {
+
+            const bool skipped = (iWindowStart >= iGateStop);
+
+            if (skipped)
+                MeasureList.BeginGateProbe();
+
+            MeasureList.CMinMeasureList::AddMeasure(
+                pCases[iWindowStart] - endCases,
+                pMeasure[iWindowStart] - endMeasure
+            );
+
+            if (skipped)
+                MeasureList.EndGateProbe();
+        }
+    }
+
+    return wouldEvaluate;
+}
+
+  #endif
+#endif
+
 /** Iterates through defined temporal window for accumulated cluster data.
     Calculates greatest loglikelihood ratio among clusterings that have rates
     which we are interested in. Returns greatest loglikelihood ratio. */

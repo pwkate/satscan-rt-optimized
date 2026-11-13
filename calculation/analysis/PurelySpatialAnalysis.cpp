@@ -6,6 +6,7 @@
 #include "ClusterData.h"
 #include "SSException.h"
 #include <typeinfo>
+#include <exception>
 #include <boost/thread.hpp>
 
 /** Constructor */
@@ -15,6 +16,12 @@ CPurelySpatialAnalysis::CPurelySpatialAnalysis(const CParameters& Parameters, co
 void CPurelySpatialAnalysis::FindTopClusters(
     const AbstractDataSetGateway& DataGateway,
     MLC_Collections_t& TopClustersContainers) {
+
+    // Preserve virtual behavior for derived analysis implementations.
+    if (typeid(*this) != typeid(CPurelySpatialAnalysis)) {
+        CAnalysis::FindTopClusters(DataGateway, TopClustersContainers);
+        return;
+    }
 
     const unsigned int nWorkers = 24;
 
@@ -29,10 +36,13 @@ void CPurelySpatialAnalysis::FindTopClusters(
 
     boost::thread_group workers;
     boost::mutex addMutex;
+    boost::mutex exceptionMutex;
+    std::exception_ptr workerException;
 
     for (unsigned int worker = 0; worker < nWorkers; ++worker) {
 
         workers.create_thread([&, worker]() {
+            try {
 
             std::auto_ptr<AbstractDataSetGateway> localGateway(
                 _data_hub.GetDataSetHandler()
@@ -98,10 +108,17 @@ void CPurelySpatialAnalysis::FindTopClusters(
                     }
                 }
             }
+            } catch (...) {
+                boost::mutex::scoped_lock lock(exceptionMutex);
+                if (!workerException)
+                    workerException = std::current_exception();
+            }
         });
     }
 
     workers.join_all();
+    if (workerException)
+        std::rethrow_exception(workerException);
 
     double elapsed =
         (::GetCurrentTime_HighResolution() - StartTime)

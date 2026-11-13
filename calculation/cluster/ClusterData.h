@@ -7,6 +7,11 @@
 #include "Toolkit.h"
 #include "MakeNeighbors.h"
 #include <cstdint>
+#include <vector>
+
+#if defined(STMC_WINDOW_GATE) && !defined(STMC_CASE_GATE_MODE)
+#error "STMC_WINDOW_GATE requires STMC_CASE_GATE_MODE (1 = verify, 2 = skip)."
+#endif
 
 /** Class representing accumulated data of spatial clustering. */
 class SpatialData : public AbstractSpatialClusterData {
@@ -279,12 +284,16 @@ class SpaceTimeData : public TemporalData {
         unsigned long long zero_case_expansions;
         unsigned long long tail_zero_case_expansions;
         unsigned long long compare_calls;
+        unsigned long long window_total;      // windows the ungated compare would evaluate
+        unsigned long long window_evaluated;  // windows actually evaluated (mode 1: would evaluate)
 
         CaseGateStats()
           : expansions(0),
             zero_case_expansions(0),
             tail_zero_case_expansions(0),
-            compare_calls(0) {}
+            compare_calls(0),
+            window_total(0),
+            window_evaluated(0) {}
     };
 
   private:
@@ -294,6 +303,18 @@ class SpaceTimeData : public TemporalData {
      CaseGateStats              _gate_stats;
 	 #if defined(STMC_GATE_BITMAP)
 		const uint64_t * _case_bits;
+     #endif
+     #if defined(STMC_WINDOW_GATE)
+     // Scratch buffer for the window-level gate (see TemporalDataEvaluator::
+     // CompareMeasuresWindowGated): lastCase[e] for e = 0..number of intervals.
+     // Not part of the logical state; not copied.
+     std::vector<int>           _last_case;
+
+     int * lastCaseBuffer() {
+         if (_last_case.size() < giAllocationSize)
+             _last_case.resize(giAllocationSize);
+         return &_last_case[0];
+     }
      #endif
 
      void Init() {

@@ -13,6 +13,9 @@
 #include "Toolkit.h"
 #include "GisUtils.h"
 #include <boost/thread.hpp>
+#include <atomic>
+#include <exception>
+#include <limits>
 
 /** constructor */
 CentroidNeighborCalculator::CentroidNeighborCalculator(const CSaTScanData& DataHub, BasePrint& PrintDirection)
@@ -420,12 +423,16 @@ void CentroidNeighborCalculator::CalculateNeighborsByCircles(
     );
 
     boost::thread_group workers;
+    boost::mutex errorMutex;
+    std::exception_ptr workerError;
+    std::atomic<bool> failed(false);
 
     for (unsigned int worker = 0;
          worker < nWorkers;
          ++worker) {
 
         workers.create_thread([&, worker]() {
+            try {
 
             // Worker-local calculator:
             // gvCentroidDistances and other scratch state
@@ -443,6 +450,7 @@ void CentroidNeighborCalculator::CalculateNeighborsByCircles(
                      static_cast<tract_t>(worker);
                  t < dataHub.m_nGridTracts;
                  t += static_cast<tract_t>(nWorkers)) {
+                if (failed.load()) break;
 
                 localCalc.CalculateNeighborsAboutCentroid(
                     0,
@@ -470,10 +478,16 @@ void CentroidNeighborCalculator::CalculateNeighborsByCircles(
                         prNeighborsCount.first
                     );
             }
+            } catch (...) {
+                failed.store(true);
+                boost::mutex::scoped_lock lock(errorMutex);
+                if (!workerError) workerError = std::current_exception();
+            }
         });
     }
 
     workers.join_all();
+    if (workerError) std::rethrow_exception(workerError);
 
     double profileCircleSeconds =
         (::GetCurrentTime_HighResolution() -
@@ -507,11 +521,22 @@ void CentroidNeighborCalculator::CalculateNeighborsByEllipses(const CSaTScanData
         nWorkers
     );
 
+    // Match CSaTScanData::AllocateSortedArray() storage selection.
+    const bool useUShort =
+        !gParameters.UsingMultipleCoordinatesMetaLocations() &&
+        dataHub.GetNumIdentifiers() +
+            static_cast<tract_t>(dataHub.getIdentifierInfo().getMetaManagerProxy().getNumMeta()) <
+            std::numeric_limits<unsigned short>::max();
+
     boost::thread_group workers;
+    boost::mutex errorMutex;
+    std::exception_ptr workerError;
+    std::atomic<bool> failed(false);
 
     for (unsigned int worker = 0; worker < nWorkers; ++worker) {
 
         workers.create_thread([&, worker]() {
+            try {
 
             // Each worker receives its own calculator instance.
             // Therefore mutable scratch state such as gvCentroidDistances
@@ -525,6 +550,7 @@ void CentroidNeighborCalculator::CalculateNeighborsByEllipses(const CSaTScanData
             for (int i = static_cast<int>(worker) + 1;
                  i <= nEllipses;
                  i += static_cast<int>(nWorkers)) {
+                if (failed.load()) break;
 					 
 				std::vector<unsigned short> ellipseNeighbors;
 				std::vector<size_t> offsets(dataHub.m_nGridTracts);
@@ -532,7 +558,7 @@ void CentroidNeighborCalculator::CalculateNeighborsByEllipses(const CSaTScanData
 
 				// Avoid very small initial reallocations.
 				// This is only a starting capacity; vector grows automatically.
-				ellipseNeighbors.reserve(dataHub.m_nGridTracts);
+				if (useUShort) ellipseNeighbors.reserve(dataHub.m_nGridTracts);
 
                 for (tract_t t = 0; t < dataHub.m_nGridTracts; ++t) {
 
@@ -549,6 +575,16 @@ void CentroidNeighborCalculator::CalculateNeighborsByEllipses(const CSaTScanData
                     localCalc.CoupleLocationsAtSameCoordinates(
                         prNeighborsCount
                     );
+
+                    if (!useUShort) {
+                        // Large-location and meta-location analyses use the
+                        // upstream integer neighbor storage, without narrowing.
+                        const_cast<CSaTScanData&>(dataHub)
+                            .AllocateSortedArrayNeighbors(
+                                localCalc.gvCentroidDistances, i, t,
+                                prNeighborsCount.second, prNeighborsCount.first);
+                        continue;
+                    }
 
                     offsets[t] = ellipseNeighbors.size();
 					counts[t] = static_cast<tract_t>(
@@ -576,7 +612,7 @@ void CentroidNeighborCalculator::CalculateNeighborsByEllipses(const CSaTScanData
 						);
                 }
 				
-				const_cast<CSaTScanData&>(dataHub)
+				if (useUShort) const_cast<CSaTScanData&>(dataHub)
 					.SetSortedUShortEllipseBlock(
 						i,
 						ellipseNeighbors,
@@ -584,10 +620,16 @@ void CentroidNeighborCalculator::CalculateNeighborsByEllipses(const CSaTScanData
 						counts
 					);
 			}
+            } catch (...) {
+                failed.store(true);
+                boost::mutex::scoped_lock lock(errorMutex);
+                if (!workerError) workerError = std::current_exception();
+            }
         });
     }
 
     workers.join_all();
+    if (workerError) std::rethrow_exception(workerError);
 	
 	double profileEllipseSeconds =
         (::GetCurrentTime_HighResolution() - profileEllipseStart)
